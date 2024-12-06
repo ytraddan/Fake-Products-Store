@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/services/api";
 import { Product } from "@/types/product";
-
 export const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
