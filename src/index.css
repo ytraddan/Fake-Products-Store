@@ -4,6 +4,9 @@
 @layer base {
   :root {
     --radius: 0.5rem;
-    color: white;
+  }
+
+  body {
+    @apply bg-zinc-950/80;
   }
 }
