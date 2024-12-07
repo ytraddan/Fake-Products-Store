@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +13,7 @@ import { Product } from "@/types/product";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Input } from "@/components/ui/input";
 import { Heart } from "lucide-react";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import {
   Pagination,
   PaginationContent,
@@ -45,7 +46,7 @@ type PageHeaderProps = {
 type NavigationProps = {
   currentPage: number;
   totalPages: number;
-  setCurrentPage: (page: number) => void;
+  handlePageChange: (page: number) => void;
 };
 
 export const Products = () => {
@@ -57,16 +58,20 @@ export const Products = () => {
     (state: RootState) => state.products,
   );
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
 
   const [priceRange, setPriceRange] = useState<string>("all");
   const [category, setCategory] = useState<string>("all");
 
+  const isLg = useMediaQuery("(min-width: 1024px)");
+  const isMd = useMediaQuery("(min-width: 768px)");
+  const itemsPerPage = isLg ? 8 : isMd ? 6 : 4;
+
   const categories = [...new Set(items.map((item) => item.category))];
 
-  const applyFilters = (products: Product[]) => {
-    return products
-      .filter((product) =>
+  const applyFilters = useCallback(
+    (products: Product[]) => {
+      return products
+        .filter((product) =>
         showFavorites
           ? favorites.includes(product.id)
           : items.includes(product),
@@ -88,13 +93,15 @@ export const Products = () => {
             return product.price >= 100;
           default:
             return true;
-        }
-      });
-  };
+          }
+        });
+    },
+    [showFavorites, favorites, items, searchTerm, category, priceRange],
+  );
 
   const searchFilteredProducts = applyFilters(items);
-
   const totalPages = Math.ceil(searchFilteredProducts.length / itemsPerPage);
+
   const currentProducts = searchFilteredProducts.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
@@ -118,8 +125,22 @@ export const Products = () => {
     setCurrentPage(1);
   };
 
+  const handleSetPriceRange = (value: string) => {
+    setPriceRange(value);
+    setCurrentPage(1);
+  };
+
+  const handleSetCategory = (value: string) => {
+    setCategory(value);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
+
   if (loading) {
-    return <LoadingSkeleton />;
+    return <LoadingSkeleton itemsPerPage={itemsPerPage} />;
   }
 
   return (
@@ -137,11 +158,14 @@ export const Products = () => {
           onChange={(e) => handleChange(e)}
         />
         <div className="flex gap-2">
-          <PriceFilter priceRange={priceRange} setPriceRange={setPriceRange} />
+          <PriceFilter
+            priceRange={priceRange}
+            setPriceRange={handleSetPriceRange}
+          />
           <CategoryFilter
             category={category}
             categories={categories}
-            setCategory={setCategory}
+            setCategory={handleSetCategory}
           />
         </div>
       </div>
@@ -160,7 +184,7 @@ export const Products = () => {
         <Navigation
           currentPage={currentPage}
           totalPages={totalPages}
-          setCurrentPage={setCurrentPage}
+          handlePageChange={handlePageChange}
         />
       )}
     </div>
@@ -284,13 +308,17 @@ const ProductCard = ({
 const Navigation = ({
   currentPage,
   totalPages,
-  setCurrentPage,
+  handlePageChange,
 }: NavigationProps) => (
   <Pagination className="fixed bottom-8 left-0 right-0 w-fit rounded-lg bg-zinc-100/80 backdrop-blur-sm dark:bg-zinc-900">
     <PaginationContent>
       <PaginationItem>
         <PaginationPrevious
-          onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+          onClick={() => {
+            if (currentPage > 1) {
+              handlePageChange(currentPage - 1);
+            }
+          }}
           className={
             currentPage === 1
               ? "pointer-events-none opacity-50"
@@ -298,10 +326,10 @@ const Navigation = ({
           }
         />
       </PaginationItem>
-      {[...Array(totalPages)].map((_, i) => (
+      {Array.from({ length: totalPages }, (_, i) => (
         <PaginationItem key={i + 1}>
           <PaginationLink
-            onClick={() => setCurrentPage(i + 1)}
+            onClick={() => handlePageChange(i + 1)}
             isActive={currentPage === i + 1}
           >
             {i + 1}
@@ -310,7 +338,11 @@ const Navigation = ({
       ))}
       <PaginationItem>
         <PaginationNext
-          onClick={() => setCurrentPage(Math.min(currentPage + 1, totalPages))}
+          onClick={() => {
+            if (currentPage < totalPages) {
+              handlePageChange(currentPage + 1);
+            }
+          }}
           className={
             currentPage === totalPages
               ? "pointer-events-none opacity-50"
@@ -322,7 +354,7 @@ const Navigation = ({
   </Pagination>
 );
 
-const LoadingSkeleton = () => (
+const LoadingSkeleton = ({ itemsPerPage }: { itemsPerPage: number }) => (
   <div className="container mx-auto p-4">
     <div className="flex items-start justify-between">
       <Skeleton className="h-8 w-48" />
@@ -338,7 +370,7 @@ const LoadingSkeleton = () => (
     </div>
 
     <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-      {[...Array(8)].map((_, i) => (
+      {[...Array(itemsPerPage)].map((_, i) => (
         <Card key={i}>
           <CardHeader className="p-4">
             <div className="flex items-center justify-between">
