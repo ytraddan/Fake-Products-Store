@@ -8,7 +8,11 @@ interface LikeButtonProps {
   dispatch: AppDispatch;
 }
 
-export const LikeButton = ({ product, favorites, dispatch }: LikeButtonProps) => (
+export const LikeButton = ({
+  product,
+  favorites,
+  dispatch,
+}: LikeButtonProps) => (
   <div
     className="cursor-pointer rounded-lg p-1 hover:bg-zinc-700/40"
     onClick={() => dispatch(toggleFavorite(product.id))}
@@ -28,4 +32,4 @@ export const LikeButton = ({ product, favorites, dispatch }: LikeButtonProps) =>
       />
     </svg>
   </div>
-); 
+);

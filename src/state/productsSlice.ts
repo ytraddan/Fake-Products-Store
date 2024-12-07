@@ -7,6 +7,7 @@ interface ProductsState {
   loading: boolean;
   error: string | null;
   favorites: number[];
+  localItems: Product[];
 }
 
 const initialState: ProductsState = {
@@ -14,6 +15,7 @@ const initialState: ProductsState = {
   loading: false,
   error: null,
   favorites: [],
+  localItems: [],
 };
 
 export const fetchProducts = createAsyncThunk(
@@ -26,9 +28,9 @@ export const fetchProducts = createAsyncThunk(
 
 export const addProduct = createAsyncThunk(
   "products/addProduct",
-  async (product: Product) => {
+  async (product: Omit<Product, "id">) => {
     const res = await createProduct(product);
-    return res;
+    return { ...product, id: res };
   },
 );
 
@@ -60,8 +62,17 @@ const productsSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || "Failed to fetch products";
       })
+      .addCase(addProduct.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(addProduct.fulfilled, (state, action) => {
-        state.items.push(action.payload);
+        state.loading = false;
+        state.localItems.push(action.payload);
+      })
+      .addCase(addProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to add product";
       });
   },
 });

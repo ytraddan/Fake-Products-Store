@@ -11,7 +11,7 @@ import type { RootState, AppDispatch } from "@/state/store";
 export const Products = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { items, loading, favorites } = useSelector(
+  const { items, loading, favorites, localItems } = useSelector(
     (state: RootState) => state.products,
   );
   const [showFavorites, setShowFavorites] = useState(false);
@@ -24,10 +24,13 @@ export const Products = () => {
   useEffect(() => {
     setFilteredProducts(
       showFavorites
-        ? items.filter((product) => favorites.includes(product.id))
-        : items,
+        ? [...localItems, ...items].filter((product) =>
+            favorites.includes(product.id),
+          )
+        : [...localItems, ...items],
     );
-  }, [items, showFavorites, favorites]);
+    console.log(localItems);
+  }, [items, showFavorites, favorites, localItems]);
 
   const handleProductClick = (id: number) => {
     navigate(`/products/${id}`);

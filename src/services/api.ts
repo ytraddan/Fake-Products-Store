@@ -12,7 +12,7 @@ export async function getProduct(id: number): Promise<Product> {
   return res.json();
 }
 
-export async function createProduct(product: Product): Promise<Product> {
+export async function createProduct(product: Omit<Product, "id">): Promise<number> {
   const res = await fetch(`${API_URL}/products`, {
     method: "POST",
     body: JSON.stringify(product),
