@@ -145,7 +145,7 @@ export const Products = () => {
           />
         </div>
       </div>
-      <div className="mb-16 grid grid-cols-2 gap-4 sm:mb-24 md:grid-cols-3 lg:grid-cols-4">
+      <div className="sm:mb-18 mb-20 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
         {currentProducts.map((product) => (
           <ProductCard
             key={product.id}
@@ -286,7 +286,7 @@ const Navigation = ({
   totalPages,
   setCurrentPage,
 }: NavigationProps) => (
-  <Pagination className="fixed bottom-5 left-0 right-0 w-fit rounded-lg bg-zinc-100/80 backdrop-blur-sm dark:bg-zinc-900 sm:bottom-10 xl:bottom-12">
+  <Pagination className="fixed bottom-8 left-0 right-0 w-fit rounded-lg bg-zinc-100/80 backdrop-blur-sm dark:bg-zinc-900">
     <PaginationContent>
       <PaginationItem>
         <PaginationPrevious
