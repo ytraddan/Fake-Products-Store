@@ -19,7 +19,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 export const CreateProduct = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const form = useForm<Omit<Product, "id" | "rating">>();
+  const form = useForm<Omit<Product, "id" | "rating">>({
+    defaultValues: {
+      title: "",
+      price: 0,
+      description: "",
+      category: "",
+      image: "",
+    },
+  });
 
   const onSubmit = async (data: Omit<Product, "id" | "rating">) => {
     dispatch(addProduct({ ...data, rating: { rate: 0, count: 0 } }));
@@ -35,9 +43,11 @@ export const CreateProduct = () => {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              
               <FormField
                 control={form.control}
                 name="title"
+                rules={{ required: "Title is required" }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Title</FormLabel>
@@ -51,12 +61,17 @@ export const CreateProduct = () => {
               <FormField
                 control={form.control}
                 name="price"
+                rules={{
+                  required: "Price is required",
+                  min: { value: 0.01, message: "Price must be greater than 0" },
+                }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Price</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
+                        step="0.01"
                         placeholder="Product price"
                         {...field}
                         onChange={(e) => field.onChange(Number(e.target.value))}
@@ -69,6 +84,7 @@ export const CreateProduct = () => {
               <FormField
                 control={form.control}
                 name="description"
+                rules={{ required: "Description is required" }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Description</FormLabel>
@@ -86,6 +102,7 @@ export const CreateProduct = () => {
               <FormField
                 control={form.control}
                 name="category"
+                rules={{ required: "Category is required" }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Category</FormLabel>
@@ -99,6 +116,7 @@ export const CreateProduct = () => {
               <FormField
                 control={form.control}
                 name="image"
+                rules={{ required: "Image URL is required" }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Image URL</FormLabel>
@@ -112,7 +130,7 @@ export const CreateProduct = () => {
               <div className="flex justify-between">
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="secondary"
                   onClick={() => navigate("/products")}
                 >
                   Cancel
