@@ -54,7 +54,7 @@ const PaginationLink = ({
       }),
       "select-none text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50",
       isActive &&
-        "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-50",
+        "bg-zinc-100 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-50",
       className,
     )}
     {...props}

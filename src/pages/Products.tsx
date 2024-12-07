@@ -21,6 +21,13 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type ProductCardProps = {
   product: Product;
@@ -52,13 +59,40 @@ export const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
-  const filteredProducts = showFavorites
-    ? items.filter((product) => favorites.includes(product.id))
-    : items;
+  const [priceRange, setPriceRange] = useState<string>("all");
+  const [category, setCategory] = useState<string>("all");
 
-  const searchFilteredProducts = filteredProducts.filter((product) =>
-    product.title.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const categories = [...new Set(items.map((item) => item.category))];
+
+  const applyFilters = (products: Product[]) => {
+    return products
+      .filter((product) =>
+        showFavorites
+          ? favorites.includes(product.id)
+          : items.includes(product),
+      )
+      .filter((product) =>
+        product.title.toLowerCase().includes(searchTerm.toLowerCase()),
+      )
+      .filter((product) => {
+        if (category === "all") return true;
+        return product.category === category;
+      })
+      .filter((product) => {
+        switch (priceRange) {
+          case "0-49":
+            return product.price <= 49;
+          case "50-99":
+            return product.price >= 50 && product.price <= 99;
+          case "100+":
+            return product.price >= 100;
+          default:
+            return true;
+        }
+      });
+  };
+
+  const searchFilteredProducts = applyFilters(items);
 
   const totalPages = Math.ceil(searchFilteredProducts.length / itemsPerPage);
   const currentProducts = searchFilteredProducts.slice(
@@ -95,13 +129,23 @@ export const Products = () => {
         handleShowFavorites={handleShowFavorites}
         navigate={navigate}
       />
-      <Input
-        placeholder="Search for products..."
-        value={searchTerm}
-        onChange={(e) => handleChange(e)}
-        className="mx-auto my-6 max-w-full"
-      />
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+
+      <div className="my-6 flex flex-col gap-4 sm:flex-row">
+        <Input
+          placeholder="Search for products..."
+          value={searchTerm}
+          onChange={(e) => handleChange(e)}
+        />
+        <div className="flex gap-2">
+          <PriceFilter priceRange={priceRange} setPriceRange={setPriceRange} />
+          <CategoryFilter
+            category={category}
+            categories={categories}
+            setCategory={setCategory}
+          />
+        </div>
+      </div>
+      <div className="mb-16 grid grid-cols-2 gap-4 sm:mb-24 md:grid-cols-3 lg:grid-cols-4">
         {currentProducts.map((product) => (
           <ProductCard
             key={product.id}
@@ -122,6 +166,50 @@ export const Products = () => {
     </div>
   );
 };
+
+const CategoryFilter = ({
+  category,
+  categories,
+  setCategory,
+}: {
+  category: string;
+  categories: string[];
+  setCategory: (value: string) => void;
+}) => (
+  <Select value={category} onValueChange={setCategory}>
+    <SelectTrigger className="w-40">
+      <SelectValue placeholder="Category" />
+    </SelectTrigger>
+    <SelectContent className="relative" position="popper">
+      <SelectItem value="all">All Categories</SelectItem>
+      {categories.map((category) => (
+        <SelectItem key={category} value={category}>
+          {category.charAt(0).toUpperCase() + category.slice(1)}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+);
+
+const PriceFilter = ({
+  priceRange,
+  setPriceRange,
+}: {
+  priceRange: string;
+  setPriceRange: (value: string) => void;
+}) => (
+  <Select value={priceRange} onValueChange={setPriceRange}>
+    <SelectTrigger className="w-32">
+      <SelectValue placeholder="Price Range" />
+    </SelectTrigger>
+    <SelectContent className="relative" position="popper">
+      <SelectItem value="all">All Prices</SelectItem>
+      <SelectItem value="0-49">$0 - $49</SelectItem>
+      <SelectItem value="50-99">$50 - $99</SelectItem>
+      <SelectItem value="100+">$100+</SelectItem>
+    </SelectContent>
+  </Select>
+);
 
 const PageHeader = ({
   showFavorites,
@@ -173,7 +261,7 @@ const ProductCard = ({
         <img
           src={product.image}
           alt={product.title}
-          className="mx-auto mb-4 h-44 rounded-xl"
+          className="mx-auto mb-4 h-32 rounded-xl sm:h-44"
         />
         <p className="line-clamp-2 text-sm text-gray-500 first-letter:uppercase">
           {product.description}
@@ -198,7 +286,7 @@ const Navigation = ({
   totalPages,
   setCurrentPage,
 }: NavigationProps) => (
-  <Pagination className="mt-8">
+  <Pagination className="fixed bottom-5 left-0 right-0 w-fit rounded-lg bg-zinc-100/80 backdrop-blur-sm dark:bg-zinc-900 sm:bottom-10 xl:bottom-12">
     <PaginationContent>
       <PaginationItem>
         <PaginationPrevious
@@ -235,32 +323,36 @@ const Navigation = ({
 );
 
 const LoadingSkeleton = () => (
-  <div className="container mx-auto mt-1 p-4">
+  <div className="container mx-auto p-4">
     <div className="flex items-start justify-between">
-      <div className="items-top flex gap-4">
-        <Skeleton className="h-8 w-48" />
-      </div>
-      <div className="flex flex-col gap-2 sm:flex-row">
-        <Skeleton className="h-9 w-28" />
+      <Skeleton className="h-8 w-48" />
+      <Skeleton className="h-8 w-32" />
+    </div>
+
+    <div className="my-6 flex flex-col gap-4 sm:flex-row">
+      <Skeleton className="h-10 w-full" />
+      <div className="flex gap-2">
+        <Skeleton className="h-10 w-32" />
+        <Skeleton className="h-10 w-40" />
       </div>
     </div>
-    <Skeleton className="mx-auto my-6 h-9 w-full" />
+
     <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
       {[...Array(8)].map((_, i) => (
-        <Card key={i} className="overflow-hidden">
-          <CardHeader className="px-4 pb-4 pt-2">
+        <Card key={i}>
+          <CardHeader className="p-4">
             <div className="flex items-center justify-between">
               <Skeleton className="h-5 w-32" />
               <Skeleton className="h-5 w-16" />
             </div>
           </CardHeader>
-          <CardContent className="p-4">
-            <Skeleton className="mx-auto mb-4 h-44 w-full rounded-xl" />
+          <CardContent className="px-4 pb-4 pt-2">
+            <Skeleton className="mx-auto mb-4 h-32 w-full rounded-xl sm:h-44" />
             <Skeleton className="mb-2 h-4 w-full" />
             <Skeleton className="h-4 w-3/4" />
             <div className="mt-2 flex items-center justify-between">
               <Skeleton className="h-8 w-16" />
-              <Skeleton className="h-8 w-9" />
+              <Skeleton className="h-8 w-8" />
             </div>
           </CardContent>
         </Card>
