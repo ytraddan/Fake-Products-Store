@@ -35,15 +35,14 @@ export const CreateProduct = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <Card className="mx-auto max-w-2xl">
+    <div className="container mx-auto flex min-h-screen items-center p-4">
+      <Card className="mx-auto w-full max-w-2xl">
         <CardHeader>
           <CardTitle>Create New Product</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              
               <FormField
                 control={form.control}
                 name="title"
