@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/state/store";
 import { Product } from "@/types/product";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { Input } from "@/components/ui/input";
 
 type ProductCardProps = {
   product: Product;
@@ -28,14 +29,23 @@ type PageHeaderProps = {
 export const Products = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const [showFavorites, setShowFavorites] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const { items, loading, favorites } = useSelector(
     (state: RootState) => state.products,
   );
-  const [showFavorites, setShowFavorites] = useState(false);
 
   const filteredProducts = showFavorites
     ? items.filter((product) => favorites.includes(product.id))
     : items;
+
+  const searchFilteredProducts = filteredProducts.filter((product) =>
+    product.title.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
 
   const handleProductClick = (id: number) => {
     navigate(`/products/${id}`);
@@ -56,10 +66,16 @@ export const Products = () => {
         setShowFavorites={setShowFavorites}
         navigate={navigate}
       />
-
+      <Input
+        placeholder="Search for products..."
+        value={searchTerm}
+        onChange={(e) => handleChange(e)}
+        className="mx-auto my-6 max-w-full"
+      />
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {filteredProducts.map((product) => (
+        {searchFilteredProducts.map((product) => (
           <ProductCard
+            key={product.id}
             product={product}
             handleProductClick={handleProductClick}
             handleDelete={handleDelete}
@@ -76,23 +92,25 @@ const PageHeader = ({
   setShowFavorites,
   navigate,
 }: PageHeaderProps) => (
-  <div className="mb-6 flex items-start justify-between">
-    <div className="items-top flex gap-4">
-      <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">
-        Fake Products Store
-      </h1>
-      <ThemeToggle />
-    </div>
-    <div className="flex flex-col gap-2 sm:flex-row">
-      <Button
-        variant="secondary"
-        onClick={() => setShowFavorites(!showFavorites)}
-      >
-        {showFavorites ? "Show All" : "Show Favorites"}
-      </Button>
-      <Button onClick={() => navigate("/create-product")}>
-        Create Product
-      </Button>
+  <div className="space-y-4">
+    <div className="flex items-start justify-between">
+      <div className="items-top flex gap-4">
+        <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">
+          Fake Products Store
+        </h1>
+        <ThemeToggle />
+      </div>
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <Button
+          variant="secondary"
+          onClick={() => setShowFavorites(!showFavorites)}
+        >
+          {showFavorites ? "Show All" : "Show Favorites"}
+        </Button>
+        <Button onClick={() => navigate("/create-product")}>
+          Create Product
+        </Button>
+      </div>
     </div>
   </div>
 );
@@ -103,7 +121,7 @@ const ProductCard = ({
   handleDelete,
   favorites,
 }: ProductCardProps) => (
-  <Card key={product.id} className="overflow-hidden">
+  <Card className="overflow-hidden">
     <CardHeader className="p-4">
       <CardTitle className="flex items-center justify-between">
         <span className="max-w-xs truncate">{product.title}</span>
