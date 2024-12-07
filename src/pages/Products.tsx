@@ -4,12 +4,13 @@ import { useNavigate } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LikeButton } from "@/components/LikeButton";
+import { LikeButton } from "@/components/ui/LikeButton";
 import type { RootState } from "@/state/store";
 import { deleteProduct } from "@/state/productsSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/state/store";
 import { Product } from "@/types/product";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 type ProductCardProps = {
   product: Product;
@@ -18,7 +19,7 @@ type ProductCardProps = {
   favorites: number[];
 };
 
-type HeaderProps = {
+type PageHeaderProps = {
   showFavorites: boolean;
   setShowFavorites: (show: boolean) => void;
   navigate: (path: string) => void;
@@ -70,6 +71,32 @@ export const Products = () => {
   );
 };
 
+const PageHeader = ({
+  showFavorites,
+  setShowFavorites,
+  navigate,
+}: PageHeaderProps) => (
+  <div className="mb-6 flex items-start justify-between">
+    <div className="items-top flex gap-4">
+      <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">
+        Fake Products Store
+      </h1>
+      <ThemeToggle />
+    </div>
+    <div className="flex flex-col gap-2 sm:flex-row">
+      <Button
+        variant="secondary"
+        onClick={() => setShowFavorites(!showFavorites)}
+      >
+        {showFavorites ? "Show All" : "Show Favorites"}
+      </Button>
+      <Button onClick={() => navigate("/create-product")}>
+        Create Product
+      </Button>
+    </div>
+  </div>
+);
+
 const ProductCard = ({
   product,
   handleProductClick,
@@ -109,27 +136,6 @@ const ProductCard = ({
       </div>
     </CardContent>
   </Card>
-);
-
-const PageHeader = ({
-  showFavorites,
-  setShowFavorites,
-  navigate,
-}: HeaderProps) => (
-  <div className="mb-6 flex items-start justify-between">
-    <h1 className="text-2xl font-bold text-white">Fake Products Store</h1>
-    <div className="flex flex-col gap-2 sm:flex-row">
-      <Button
-        variant="secondary"
-        onClick={() => setShowFavorites(!showFavorites)}
-      >
-        {showFavorites ? "Show All" : "Show Favorites"}
-      </Button>
-      <Button onClick={() => navigate("/create-product")}>
-        Create Product
-      </Button>
-    </div>
-  </div>
 );
 
 const LoadingSkeleton = () => (

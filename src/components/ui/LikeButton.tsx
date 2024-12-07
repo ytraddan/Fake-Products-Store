@@ -2,7 +2,6 @@ import { useDispatch } from "react-redux";
 import { Product } from "@/types/product";
 import { toggleFavorite } from "@/state/productsSlice";
 import { AppDispatch } from "@/state/store";
-
 interface LikeButtonProps {
   product: Product;
   favorites: number[];
@@ -10,15 +9,15 @@ interface LikeButtonProps {
 
 export const LikeButton = ({ product, favorites }: LikeButtonProps) => {
   const dispatch = useDispatch<AppDispatch>();
-
+  const isLiked = favorites.includes(product.id);
   return (
     <div
-      className="cursor-pointer rounded-lg p-1 hover:bg-zinc-700/40"
+      className="cursor-pointer rounded-lg p-1 hover:bg-zinc-200/40 dark:text-white dark:hover:bg-zinc-700/40"
       onClick={() => dispatch(toggleFavorite(product.id))}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        fill={favorites.includes(product.id) ? "white" : "none"}
+        fill={isLiked ? "currentColor" : "none"}
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
