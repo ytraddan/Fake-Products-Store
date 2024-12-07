@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Product } from "@/types/product";
-import { api } from "@/services/api";
+import { createProduct, getProducts } from "@/services/api";
 
 interface ProductsState {
   items: Product[];
@@ -19,21 +19,17 @@ const initialState: ProductsState = {
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
   async () => {
-    const response = await api.getProducts();
-    return response;
-  }
+    const res = await getProducts();
+    return res;
+  },
 );
 
 export const addProduct = createAsyncThunk(
   "products/addProduct",
-  async (product: Omit<Product, "id">) => {
-    const id = Date.now();
-    return {
-      ...product,
-      id,
-      rating: { rate: 0, count: 0 },
-    };
-  }
+  async (product: Product) => {
+    const res = await createProduct(product);
+    return res;
+  },
 );
 
 const productsSlice = createSlice({

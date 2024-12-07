@@ -2,23 +2,27 @@ import { Product } from "@/types/product";
 
 const API_URL = "https://fakestoreapi.com";
 
-export const api = {
-  getProducts: () => fetch(`${API_URL}/products`).then((res) => res.json()),
+export async function getProducts(): Promise<Product[]> {
+  const res = await fetch(`${API_URL}/products`);
+  return res.json();
+}
 
-  getProduct: (id: number) =>
-    fetch(`${API_URL}/products/${id}`).then((res) => res.json()),
+export async function getProduct(id: number): Promise<Product> {
+  const res = await fetch(`${API_URL}/products/${id}`);
+  return res.json();
+}
 
-  createProduct: (product: Omit<Product, "id">) =>
-    fetch(`${API_URL}/products`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(product),
-    }).then((res) => res.json()),
+export async function createProduct(product: Product): Promise<Product> {
+  const res = await fetch(`${API_URL}/products`, {
+    method: "POST",
+    body: JSON.stringify(product),
+  });
+  return res.json();
+}
 
-  deleteProduct: (id: number) =>
-    fetch(`${API_URL}/products/${id}`, {
-      method: "DELETE",
-    }).then((res) => res.json()),
-};
+export async function deleteProduct(id: number): Promise<Product> {
+  const res = await fetch(`${API_URL}/products/${id}`, {
+    method: "DELETE",
+  });
+  return res.json();
+}
