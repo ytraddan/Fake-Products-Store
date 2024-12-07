@@ -12,7 +12,7 @@
   }
 
   body {
-    @apply bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50;
+    @apply bg-white dark:bg-zinc-950;
   }
   ::-webkit-scrollbar {
     width: 10px;
@@ -24,10 +24,10 @@
     @apply rounded-full bg-zinc-700 transition-colors hover:bg-zinc-600;
   }
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-zinc-600;
+    @apply bg-zinc-800;
   }
   * {
     scrollbar-width: thin;
-    scrollbar-color: theme("colors.zinc.700") theme("colors.zinc.900");
+    scrollbar-color: theme("colors.zinc.300") theme("colors.zinc.900");
   }
 }

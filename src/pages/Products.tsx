@@ -12,6 +12,7 @@ import { AppDispatch } from "@/state/store";
 import { Product } from "@/types/product";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Input } from "@/components/ui/input";
+import { Heart } from "lucide-react";
 
 type ProductCardProps = {
   product: Product;
@@ -95,18 +96,21 @@ const PageHeader = ({
   <div className="space-y-4">
     <div className="flex items-start justify-between">
       <div className="items-top flex gap-4">
-        <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">
+        <h1 className="text-2xl font-bold dark:text-white">
           Fake Products Store
         </h1>
         <ThemeToggle />
       </div>
       <div className="flex flex-col gap-2 sm:flex-row">
-        <Button
-          variant="secondary"
+        <div
+          className="cursor-pointer rounded-full p-2 transition-colors hover:bg-zinc-200 dark:text-white dark:hover:bg-zinc-700/40"
           onClick={() => setShowFavorites(!showFavorites)}
         >
-          {showFavorites ? "Show All" : "Show Favorites"}
-        </Button>
+          <Heart
+            className="size-6"
+            fill={showFavorites ? "currentColor" : "none"}
+          />
+        </div>
         <Button onClick={() => navigate("/create-product")}>
           Create Product
         </Button>
@@ -158,13 +162,14 @@ const ProductCard = ({
 
 const LoadingSkeleton = () => (
   <div className="container mx-auto p-4">
-    <div className="mb-5 flex items-center justify-between">
+    <div className="flex items-center justify-between">
       <Skeleton className="h-8 w-48" />
       <div className="space-x-4">
         <Skeleton className="inline-block h-9 w-28" />
         <Skeleton className="inline-block h-9 w-32" />
       </div>
     </div>
+    <Skeleton className="my-6 h-8 w-full" />
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {[...Array(6)].map((_, i) => (
         <Card key={i}>
