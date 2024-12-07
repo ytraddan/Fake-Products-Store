@@ -5,12 +5,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getProduct } from "@/services/api";
 import { Product } from "@/types/product";
 import { Skeleton } from "@/components/ui/skeleton";
+import { LikeButton } from "@/components/LikeButton";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/state/store";
+import { RootState } from "@/state/store";
+import { useSelector } from "react-redux";
 
 export const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch<AppDispatch>();
+  const favorites = useSelector((state: RootState) => state.products.favorites);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -56,9 +63,16 @@ export const ProductDetails = () => {
           </div>
           <Rating product={product} />
           <p className="mb-4 text-gray-500">{product.description}</p>
-          <Button variant="default" onClick={() => navigate("/products")}>
-            Back to Products
-          </Button>
+          <div className="flex justify-between">
+            <Button variant="default" onClick={() => navigate("/products")}>
+              Back to Products
+            </Button>
+            <LikeButton
+              product={product}
+              favorites={favorites}
+              dispatch={dispatch}
+            />
+          </div>
         </CardContent>
       </Card>
     </div>
