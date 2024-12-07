@@ -7,7 +7,6 @@ interface ProductsState {
   loading: boolean;
   error: string | null;
   favorites: number[];
-  localItems: Product[];
 }
 
 const initialState: ProductsState = {
@@ -15,7 +14,6 @@ const initialState: ProductsState = {
   loading: false,
   error: null,
   favorites: [],
-  localItems: [],
 };
 
 export const fetchProducts = createAsyncThunk(
@@ -29,8 +27,9 @@ export const fetchProducts = createAsyncThunk(
 export const addProduct = createAsyncThunk(
   "products/addProduct",
   async (product: Omit<Product, "id">) => {
-    const res = await createProduct(product);
-    return { ...product, id: res };
+    await createProduct(product);
+    const id = Date.now();
+    return { ...product, id };
   },
 );
 
@@ -40,11 +39,10 @@ const productsSlice = createSlice({
   reducers: {
     toggleFavorite: (state, action: PayloadAction<number>) => {
       const id = action.payload;
-      const index = state.favorites.indexOf(id);
-      if (index === -1) {
-        state.favorites.push(id);
+      if (state.favorites.includes(id)) {
+        state.favorites = state.favorites.filter((favId) => favId !== id);
       } else {
-        state.favorites.splice(index, 1);
+        state.favorites.push(id);
       }
     },
   },
@@ -68,7 +66,7 @@ const productsSlice = createSlice({
       })
       .addCase(addProduct.fulfilled, (state, action) => {
         state.loading = false;
-        state.localItems.push(action.payload);
+        state.items.unshift(action.payload);
       })
       .addCase(addProduct.rejected, (state, action) => {
         state.loading = false;

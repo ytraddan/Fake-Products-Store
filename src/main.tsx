@@ -6,7 +6,11 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import { Products } from "./pages/Products.tsx";
 import { ProductDetails } from "./pages/ProductDetails.tsx";
 import { CreateProduct } from "./pages/CreateProduct.tsx";
+import { fetchProducts } from "./state/productsSlice";
 import "./index.css";
+
+// Fetch products when app starts
+store.dispatch(fetchProducts());
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

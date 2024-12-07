@@ -1,36 +1,27 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { fetchProducts } from "@/state/productsSlice";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LikeButton } from "@/components/LikeButton";
-import type { RootState, AppDispatch } from "@/state/store";
+import type { RootState } from "@/state/store";
 
 export const Products = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { items, loading, favorites, localItems } = useSelector(
+  const { items, loading, favorites } = useSelector(
     (state: RootState) => state.products,
   );
   const [showFavorites, setShowFavorites] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState(items);
 
   useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
-
-  useEffect(() => {
     setFilteredProducts(
       showFavorites
-        ? [...localItems, ...items].filter((product) =>
-            favorites.includes(product.id),
-          )
-        : [...localItems, ...items],
+        ? items.filter((product) => favorites.includes(product.id))
+        : items,
     );
-    console.log(localItems);
-  }, [items, showFavorites, favorites, localItems]);
+  }, [items, showFavorites, favorites]);
 
   const handleProductClick = (id: number) => {
     navigate(`/products/${id}`);
@@ -75,11 +66,7 @@ export const Products = () => {
                 <Button variant="destructive" size="sm" onClick={() => {}}>
                   Delete
                 </Button>
-                <LikeButton
-                  product={product}
-                  favorites={favorites}
-                  dispatch={dispatch}
-                />
+                <LikeButton product={product} favorites={favorites} />
               </div>
             </CardContent>
           </Card>

@@ -1,38 +1,20 @@
 import { useParams, useNavigate } from "react-router";
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getProduct } from "@/services/api";
 import { Product } from "@/types/product";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LikeButton } from "@/components/LikeButton";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/state/store";
-import { RootState } from "@/state/store";
 import { useSelector } from "react-redux";
+import { RootState } from "@/state/store";
 
 export const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
-  const dispatch = useDispatch<AppDispatch>();
-  const favorites = useSelector((state: RootState) => state.products.favorites);
+  const { items, loading, favorites } = useSelector(
+    (state: RootState) => state.products
+  );
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const data = await getProduct(Number(id));
-        setProduct(data);
-      } catch (error) {
-        console.error("Failed to fetch product:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProduct();
-  }, [id]);
+  const product = items.find((prod) => prod.id === Number(id));
 
   if (loading) {
     return <LoadingSkeleton />;
@@ -70,7 +52,6 @@ export const ProductDetails = () => {
             <LikeButton
               product={product}
               favorites={favorites}
-              dispatch={dispatch}
             />
           </div>
         </CardContent>
