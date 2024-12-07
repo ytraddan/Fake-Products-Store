@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,25 +6,28 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LikeButton } from "@/components/LikeButton";
 import type { RootState } from "@/state/store";
+import { deleteProduct } from "@/state/productsSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/state/store";
 
 export const Products = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const { items, loading, favorites } = useSelector(
     (state: RootState) => state.products,
   );
   const [showFavorites, setShowFavorites] = useState(false);
-  const [filteredProducts, setFilteredProducts] = useState(items);
 
-  useEffect(() => {
-    setFilteredProducts(
-      showFavorites
-        ? items.filter((product) => favorites.includes(product.id))
-        : items,
-    );
-  }, [items, showFavorites, favorites]);
+  const filteredProducts = showFavorites
+    ? items.filter((product) => favorites.includes(product.id))
+    : items;
 
   const handleProductClick = (id: number) => {
     navigate(`/products/${id}`);
+  };
+
+  const handleDelete = (id: number) => {
+    dispatch(deleteProduct(id));
   };
 
   if (loading) {
@@ -63,7 +66,11 @@ export const Products = () => {
                 </p>
               </div>
               <div className="mt-4 flex items-center justify-between">
-                <Button variant="destructive" size="sm" onClick={() => {}}>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleDelete(product.id)}
+                >
                   Delete
                 </Button>
                 <LikeButton product={product} favorites={favorites} />

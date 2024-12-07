@@ -33,6 +33,14 @@ export const addProduct = createAsyncThunk(
   },
 );
 
+export const deleteProduct = createAsyncThunk(
+  "products/deleteProduct",
+  async (id: number) => {
+    await deleteProduct(id);
+    return id;
+  },
+);
+
 const productsSlice = createSlice({
   name: "products",
   initialState,
@@ -71,6 +79,18 @@ const productsSlice = createSlice({
       .addCase(addProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to add product";
+      })
+      .addCase(deleteProduct.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = state.items.filter((item) => item.id !== action.payload);
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to delete product";
       });
   },
 });
