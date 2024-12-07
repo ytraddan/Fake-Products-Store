@@ -9,6 +9,20 @@ import type { RootState } from "@/state/store";
 import { deleteProduct } from "@/state/productsSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/state/store";
+import { Product } from "@/types/product";
+
+type ProductCardProps = {
+  product: Product;
+  handleProductClick: (id: number) => void;
+  handleDelete: (id: number) => void;
+  favorites: number[];
+};
+
+type HeaderProps = {
+  showFavorites: boolean;
+  setShowFavorites: (show: boolean) => void;
+  navigate: (path: string) => void;
+};
 
 export const Products = () => {
   const navigate = useNavigate();
@@ -36,7 +50,7 @@ export const Products = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <Header
+      <PageHeader
         showFavorites={showFavorites}
         setShowFavorites={setShowFavorites}
         navigate={navigate}
@@ -44,57 +58,67 @@ export const Products = () => {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredProducts.map((product) => (
-          <Card key={product.id} className="overflow-hidden">
-            <CardHeader className="p-4">
-              <CardTitle className="flex items-center justify-between">
-                <span className="max-w-xs truncate">{product.title}</span>
-                <span>${product.price}</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4">
-              <div
-                className="cursor-pointer"
-                onClick={() => handleProductClick(product.id)}
-              >
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  className="mx-auto mb-4 h-48 rounded-xl"
-                />
-                <p className="line-clamp-2 text-sm text-gray-500 first-letter:uppercase">
-                  {product.description}
-                </p>
-              </div>
-              <div className="mt-4 flex items-center justify-between">
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => handleDelete(product.id)}
-                >
-                  Delete
-                </Button>
-                <LikeButton product={product} favorites={favorites} />
-              </div>
-            </CardContent>
-          </Card>
+          <ProductCard
+            product={product}
+            handleProductClick={handleProductClick}
+            handleDelete={handleDelete}
+            favorites={favorites}
+          />
         ))}
       </div>
     </div>
   );
 };
 
-const Header = ({
+const ProductCard = ({
+  product,
+  handleProductClick,
+  handleDelete,
+  favorites,
+}: ProductCardProps) => (
+  <Card key={product.id} className="overflow-hidden">
+    <CardHeader className="p-4">
+      <CardTitle className="flex items-center justify-between">
+        <span className="max-w-xs truncate">{product.title}</span>
+        <span>${product.price}</span>
+      </CardTitle>
+    </CardHeader>
+    <CardContent className="p-4">
+      <div
+        className="cursor-pointer"
+        onClick={() => handleProductClick(product.id)}
+      >
+        <img
+          src={product.image}
+          alt={product.title}
+          className="mx-auto mb-4 h-48 rounded-xl"
+        />
+        <p className="line-clamp-2 text-sm text-gray-500 first-letter:uppercase">
+          {product.description}
+        </p>
+      </div>
+      <div className="mt-4 flex items-center justify-between">
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => handleDelete(product.id)}
+        >
+          Delete
+        </Button>
+        <LikeButton product={product} favorites={favorites} />
+      </div>
+    </CardContent>
+  </Card>
+);
+
+const PageHeader = ({
   showFavorites,
   setShowFavorites,
   navigate,
-}: {
-  showFavorites: boolean;
-  setShowFavorites: (show: boolean) => void;
-  navigate: (path: string) => void;
-}) => (
-  <div className="mb-6 flex items-center justify-between">
+}: HeaderProps) => (
+  <div className="mb-6 flex items-start justify-between">
     <h1 className="text-2xl font-bold text-white">Fake Products Store</h1>
-    <div className="space-x-4">
+    <div className="flex flex-col gap-2 sm:flex-row">
       <Button
         variant="secondary"
         onClick={() => setShowFavorites(!showFavorites)}
