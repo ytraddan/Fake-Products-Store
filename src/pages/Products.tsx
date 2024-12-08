@@ -6,13 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LikeButton } from "@/components/ui/LikeButton";
 import type { RootState } from "@/state/store";
-import { deleteProduct } from "@/state/productsSlice";
+import { deleteProduct, toggleFavorite } from "@/state/productsSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/state/store";
 import { Product } from "@/types/product";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Input } from "@/components/ui/input";
-import { Heart } from "lucide-react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import {
   Pagination,
@@ -34,13 +33,14 @@ type ProductCardProps = {
   product: Product;
   handleProductClick: (id: number) => void;
   handleDelete: (id: number) => void;
-  favorites: number[];
+  handleToggleFavorite: (id: number) => void;
+  handleIsLiked: (id: number) => boolean;
   navigate: (path: string) => void;
 };
 
 type PageHeaderProps = {
   showFavorites: boolean;
-  handleShowFavorites: () => void;
+  handleToggleShowFavorites: () => void;
   navigate: (path: string) => void;
 };
 
@@ -73,9 +73,7 @@ export const Products = () => {
     (products: Product[]) => {
       return products
         .filter((product) =>
-          showFavorites
-            ? favorites.includes(product.id)
-            : true,
+          showFavorites ? favorites.includes(product.id) : true,
         )
         .filter((product) =>
           product.title.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -121,7 +119,15 @@ export const Products = () => {
     dispatch(deleteProduct(id));
   };
 
-  const handleShowFavorites = () => {
+  const handleToggleFavorite = (id: number) => {
+    dispatch(toggleFavorite(id));
+  };
+
+  const handleIsLiked = (id: number) => {
+    return favorites.includes(id);
+  };
+
+  const handleToggleShowFavorites = () => {
     setShowFavorites(!showFavorites);
     setCurrentPage(1);
   };
@@ -148,7 +154,7 @@ export const Products = () => {
     <div className="container mx-auto p-4">
       <PageHeader
         showFavorites={showFavorites}
-        handleShowFavorites={handleShowFavorites}
+        handleToggleShowFavorites={handleToggleShowFavorites}
         navigate={navigate}
       />
 
@@ -177,7 +183,8 @@ export const Products = () => {
             product={product}
             handleProductClick={handleProductClick}
             handleDelete={handleDelete}
-            favorites={favorites}
+            handleToggleFavorite={handleToggleFavorite}
+            handleIsLiked={handleIsLiked}
             navigate={navigate}
           />
         ))}
@@ -239,22 +246,17 @@ const PriceFilter = ({
 
 const PageHeader = ({
   showFavorites,
-  handleShowFavorites,
+  handleToggleShowFavorites,
   navigate,
 }: PageHeaderProps) => (
   <div className="flex items-start justify-between">
     <h1 className="text-2xl font-bold dark:text-white">Fake Products Store</h1>
     <div className="flex items-center gap-2">
       <ThemeToggle />
-      <div
-        className="cursor-pointer rounded-full p-2 transition-colors hover:bg-zinc-200 dark:text-white dark:hover:bg-zinc-700/40"
-        onClick={handleShowFavorites}
-      >
-        <Heart
-          className="size-6"
-          fill={showFavorites ? "currentColor" : "none"}
-        />
-      </div>
+      <LikeButton
+        isLiked={showFavorites}
+        onClick={handleToggleShowFavorites}
+      />
       <Button onClick={() => navigate("/create-product")}>
         Create Product
       </Button>
@@ -266,7 +268,8 @@ const ProductCard = ({
   product,
   handleProductClick,
   handleDelete,
-  favorites,
+  handleToggleFavorite,
+  handleIsLiked,
   navigate,
 }: ProductCardProps) => (
   <Card className="overflow-hidden">
@@ -309,7 +312,10 @@ const ProductCard = ({
             Delete
           </Button>
         </div>
-        <LikeButton product={product} favorites={favorites} />
+        <LikeButton
+          isLiked={handleIsLiked(product.id)}
+          onClick={() => handleToggleFavorite(product.id)}
+        />
       </div>
     </CardContent>
   </Card>

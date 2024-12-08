@@ -10,7 +10,6 @@ import { EditProduct } from "./pages/EditProduct";
 import { fetchProducts } from "./state/productsSlice";
 import "./index.css";
 
-// Fetch products when app starts
 store.dispatch(fetchProducts());
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

@@ -10,6 +10,7 @@ import { Star } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { deleteProduct } from "@/state/productsSlice";
 import { AppDispatch } from "@/state/store";
+import { toggleFavorite } from "@/state/productsSlice";
 
 export const ProductDetails = () => {
   const { id } = useParams();
@@ -20,17 +21,25 @@ export const ProductDetails = () => {
   );
   const product = items.find((prod) => prod.id === Number(id));
 
-  const handleDelete = (id: number) => {
-    dispatch(deleteProduct(id));
+  if (!product) {
+    return <NotFoundMessage />;
+  }
+
+  const handleDelete = () => {
+    dispatch(deleteProduct(product.id));
     navigate("/products");
+  };
+
+  const handleToggleFavorite = () => {
+    dispatch(toggleFavorite(product.id));
+  };
+
+  const handleIsLiked = () => {
+    return favorites.includes(product.id);
   };
 
   if (loading) {
     return <LoadingSkeleton />;
-  }
-
-  if (!product) {
-    return <NotFoundMessage />;
   }
 
   return (
@@ -71,12 +80,15 @@ export const ProductDetails = () => {
               <Button
                 variant="ghost"
                 className="p-2 sm:p-3"
-                onClick={() => handleDelete(product.id)}
+                onClick={handleDelete}
               >
                 Delete
               </Button>
             </div>
-            <LikeButton product={product} favorites={favorites} />
+            <LikeButton
+              isLiked={handleIsLiked()}
+              onClick={handleToggleFavorite}
+            />
           </div>
         </CardContent>
       </Card>
