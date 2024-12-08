@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Product } from "@/types/product";
-import { createProduct, getProducts } from "@/services/api";
+import { getProducts } from "@/services/api";
 
 interface ProductsState {
   items: Product[];
@@ -24,23 +24,6 @@ export const fetchProducts = createAsyncThunk(
   },
 );
 
-export const addProduct = createAsyncThunk(
-  "products/addProduct",
-  async (product: Omit<Product, "id">) => {
-    await createProduct(product);
-    const id = Date.now();
-    return { ...product, id };
-  },
-);
-
-export const deleteProduct = createAsyncThunk(
-  "products/deleteProduct",
-  async (id: number) => {
-    await deleteProduct(id);
-    return id;
-  },
-);
-
 const productsSlice = createSlice({
   name: "products",
   initialState,
@@ -52,6 +35,18 @@ const productsSlice = createSlice({
       } else {
         state.favorites.push(id);
       }
+    },
+    addProduct: (state, action: PayloadAction<Product>) => {
+      state.items.push(action.payload);
+    },
+    deleteProduct: (state, action: PayloadAction<number>) => {
+      state.items = state.items.filter((item) => item.id !== action.payload);
+    },
+    updateProduct: (state, action: PayloadAction<Product>) => {
+      const { id, ...updatedProduct } = action.payload;
+      state.items = state.items.map((item) =>
+        item.id === id ? { ...item, ...updatedProduct } : item,
+      );
     },
   },
   extraReducers: (builder) => {
@@ -67,33 +62,10 @@ const productsSlice = createSlice({
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch products";
-      })
-      .addCase(addProduct.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(addProduct.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items.unshift(action.payload);
-      })
-      .addCase(addProduct.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || "Failed to add product";
-      })
-      .addCase(deleteProduct.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(deleteProduct.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items = state.items.filter((item) => item.id !== action.payload);
-      })
-      .addCase(deleteProduct.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || "Failed to delete product";
       });
   },
 });
 
-export const { toggleFavorite } = productsSlice.actions;
+export const { toggleFavorite, addProduct, deleteProduct, updateProduct } =
+  productsSlice.actions;
 export default productsSlice.reducer;

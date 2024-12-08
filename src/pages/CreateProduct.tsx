@@ -30,7 +30,9 @@ export const CreateProduct = () => {
   });
 
   const onSubmit = async (data: Omit<Product, "id" | "rating">) => {
-    dispatch(addProduct({ ...data, rating: { rate: 0, count: 0 } }));
+    dispatch(
+      addProduct({ ...data, id: Date.now(), rating: { rate: 0, count: 0 } }),
+    );
     navigate("/products");
   };
 
