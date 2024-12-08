@@ -21,6 +21,10 @@ export const ProductDetails = () => {
   );
   const product = items.find((prod) => prod.id === Number(id));
 
+  if (loading) {
+    return <LoadingSkeleton />;
+  }
+
   if (!product) {
     return <NotFoundMessage />;
   }
@@ -37,10 +41,6 @@ export const ProductDetails = () => {
   const handleIsLiked = () => {
     return favorites.includes(product.id);
   };
-
-  if (loading) {
-    return <LoadingSkeleton />;
-  }
 
   return (
     <div className="container mx-auto flex min-h-screen items-center p-4">
