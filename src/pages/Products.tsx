@@ -72,27 +72,27 @@ export const Products = () => {
     (products: Product[]) => {
       return products
         .filter((product) =>
-        showFavorites
-          ? favorites.includes(product.id)
-          : items.includes(product),
-      )
-      .filter((product) =>
-        product.title.toLowerCase().includes(searchTerm.toLowerCase()),
-      )
-      .filter((product) => {
-        if (category === "all") return true;
-        return product.category === category;
-      })
-      .filter((product) => {
-        switch (priceRange) {
-          case "0-49":
-            return product.price <= 49;
-          case "50-99":
-            return product.price >= 50 && product.price <= 99;
-          case "100+":
-            return product.price >= 100;
-          default:
-            return true;
+          showFavorites
+            ? favorites.includes(product.id)
+            : items.includes(product),
+        )
+        .filter((product) =>
+          product.title.toLowerCase().includes(searchTerm.toLowerCase()),
+        )
+        .filter((product) => {
+          if (category === "all") return true;
+          return product.category === category;
+        })
+        .filter((product) => {
+          switch (priceRange) {
+            case "0-49":
+              return product.price <= 49;
+            case "50-99":
+              return product.price >= 50 && product.price <= 99;
+            case "100+":
+              return product.price >= 100;
+            default:
+              return true;
           }
         });
     },
@@ -241,13 +241,9 @@ const PageHeader = ({
   navigate,
 }: PageHeaderProps) => (
   <div className="flex items-start justify-between">
-    <div className="items-top flex gap-4">
-      <h1 className="text-2xl font-bold dark:text-white">
-        Fake Products Store
-      </h1>
+    <h1 className="text-2xl font-bold dark:text-white">Fake Products Store</h1>
+    <div className="flex items-center gap-2">
       <ThemeToggle />
-    </div>
-    <div className="flex gap-2">
       <div
         className="cursor-pointer rounded-full p-2 transition-colors hover:bg-zinc-200 dark:text-white dark:hover:bg-zinc-700/40"
         onClick={handleShowFavorites}
@@ -285,7 +281,7 @@ const ProductCard = ({
         <img
           src={product.image}
           alt={product.title}
-          className="mx-auto mb-4 h-32 rounded-xl sm:h-44"
+          className="mx-auto mb-4 h-20 rounded-xl sm:h-44"
         />
         <p className="line-clamp-2 text-sm text-gray-500 first-letter:uppercase">
           {product.description}
@@ -379,7 +375,7 @@ const LoadingSkeleton = ({ itemsPerPage }: { itemsPerPage: number }) => (
             </div>
           </CardHeader>
           <CardContent className="px-4 pb-4 pt-2">
-            <Skeleton className="mx-auto mb-4 h-32 w-full rounded-xl sm:h-44" />
+            <Skeleton className="mx-auto mb-4 h-20 w-full rounded-xl sm:h-44" />
             <Skeleton className="mb-2 h-4 w-full" />
             <Skeleton className="h-4 w-3/4" />
             <div className="mt-2 flex items-center justify-between">
