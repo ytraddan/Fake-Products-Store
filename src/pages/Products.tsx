@@ -35,6 +35,7 @@ type ProductCardProps = {
   handleProductClick: (id: number) => void;
   handleDelete: (id: number) => void;
   favorites: number[];
+  navigate: (path: string) => void;
 };
 
 type PageHeaderProps = {
@@ -74,7 +75,7 @@ export const Products = () => {
         .filter((product) =>
           showFavorites
             ? favorites.includes(product.id)
-            : items.includes(product),
+            : true,
         )
         .filter((product) =>
           product.title.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -96,7 +97,7 @@ export const Products = () => {
           }
         });
     },
-    [showFavorites, favorites, items, searchTerm, category, priceRange],
+    [showFavorites, favorites, searchTerm, category, priceRange],
   );
 
   const searchFilteredProducts = applyFilters(items);
@@ -177,6 +178,7 @@ export const Products = () => {
             handleProductClick={handleProductClick}
             handleDelete={handleDelete}
             favorites={favorites}
+            navigate={navigate}
           />
         ))}
       </div>
@@ -265,6 +267,7 @@ const ProductCard = ({
   handleProductClick,
   handleDelete,
   favorites,
+  navigate,
 }: ProductCardProps) => (
   <Card className="overflow-hidden">
     <CardHeader className="p-4">
@@ -288,13 +291,24 @@ const ProductCard = ({
         </p>
       </div>
       <div className="mt-2 flex items-center justify-between">
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={() => handleDelete(product.id)}
-        >
-          Delete
-        </Button>
+        <div className="flex gap-1 sm:gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="p-2 sm:p-3"
+            onClick={() => navigate(`/products/${product.id}/edit`)}
+          >
+            Edit
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="p-2 sm:p-3"
+            onClick={() => handleDelete(product.id)}
+          >
+            Delete
+          </Button>
+        </div>
         <LikeButton product={product} favorites={favorites} />
       </div>
     </CardContent>
@@ -357,7 +371,7 @@ const LoadingSkeleton = ({ itemsPerPage }: { itemsPerPage: number }) => (
       <Skeleton className="h-8 w-32" />
     </div>
 
-    <div className="my-6 flex flex-col gap-4 sm:flex-row">
+    <div className="my-7 flex flex-col gap-4 sm:flex-row">
       <Skeleton className="h-10 w-full" />
       <div className="flex gap-2">
         <Skeleton className="h-10 w-32" />
@@ -369,10 +383,7 @@ const LoadingSkeleton = ({ itemsPerPage }: { itemsPerPage: number }) => (
       {[...Array(itemsPerPage)].map((_, i) => (
         <Card key={i}>
           <CardHeader className="p-4">
-            <div className="flex items-center justify-between">
-              <Skeleton className="h-5 w-32" />
-              <Skeleton className="h-5 w-16" />
-            </div>
+            <Skeleton className="h-5 w-full" />
           </CardHeader>
           <CardContent className="px-4 pb-4 pt-2">
             <Skeleton className="mx-auto mb-4 h-20 w-full rounded-xl sm:h-44" />

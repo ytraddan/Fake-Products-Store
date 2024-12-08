@@ -7,15 +7,23 @@ import { LikeButton } from "@/components/ui/LikeButton";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
 import { Star } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { deleteProduct } from "@/state/productsSlice";
+import { AppDispatch } from "@/state/store";
 
 export const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const { items, loading, favorites } = useSelector(
     (state: RootState) => state.products,
   );
-
   const product = items.find((prod) => prod.id === Number(id));
+
+  const handleDelete = (id: number) => {
+    dispatch(deleteProduct(id));
+    navigate("/products");
+  };
 
   if (loading) {
     return <LoadingSkeleton />;
@@ -45,11 +53,29 @@ export const ProductDetails = () => {
             />
           </div>
           <Rating product={product} />
-          <p className="mb-4 text-gray-500">{product.description}</p>
+          <p className="mb-4 text-gray-500 first-letter:uppercase">
+            {product.description}
+          </p>
           <div className="flex justify-between">
-            <Button variant="default" onClick={() => navigate("/products")}>
-              Back to Products
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="default" onClick={() => navigate("/products")}>
+                Back to Products
+              </Button>
+              <Button
+                variant="outline"
+                className="p-2 sm:p-3"
+                onClick={() => navigate(`/products/${product.id}/edit`)}
+              >
+                Edit
+              </Button>
+              <Button
+                variant="ghost"
+                className="p-2 sm:p-3"
+                onClick={() => handleDelete(product.id)}
+              >
+                Delete
+              </Button>
+            </div>
             <LikeButton product={product} favorites={favorites} />
           </div>
         </CardContent>
