@@ -37,7 +37,7 @@ const productsSlice = createSlice({
       }
     },
     addProduct: (state, action: PayloadAction<Product>) => {
-      state.items.push(action.payload);
+      state.items.unshift(action.payload);
     },
     deleteProduct: (state, action: PayloadAction<number>) => {
       state.items = state.items.filter((item) => item.id !== action.payload);
