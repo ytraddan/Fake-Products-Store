@@ -1,11 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { LikeButton } from "@/components/ui/LikeButton";
-import type { RootState } from "@/state/store";
 import { deleteProduct, toggleFavorite } from "@/state/productsSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/state/store";
@@ -13,6 +8,11 @@ import { Product } from "@/types/product";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Input } from "@/components/ui/input";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { LikeButton } from "@/components/ui/LikeButton";
+import { RootState } from "@/state/store";
 import {
   Pagination,
   PaginationContent,
@@ -69,39 +69,33 @@ export const Products = () => {
 
   const categories = [...new Set(items.map((item) => item.category))];
 
-  const applyFilters = useCallback(
-    (products: Product[]) => {
-      return products
-        .filter((product) =>
-          showFavorites ? favorites.includes(product.id) : true,
-        )
-        .filter((product) =>
-          product.title.toLowerCase().includes(searchTerm.toLowerCase()),
-        )
-        .filter((product) => {
-          if (category === "all") return true;
-          return product.category === category;
-        })
-        .filter((product) => {
-          switch (priceRange) {
-            case "0-49":
-              return product.price <= 49;
-            case "50-99":
-              return product.price >= 50 && product.price <= 99;
-            case "100+":
-              return product.price >= 100;
-            default:
-              return true;
-          }
-        });
-    },
-    [showFavorites, favorites, searchTerm, category, priceRange],
-  );
+  const filteredProducts = items
+    .filter((product) =>
+      showFavorites ? favorites.includes(product.id) : true,
+    )
+    .filter((product) =>
+      product.title.toLowerCase().includes(searchTerm.toLowerCase()),
+    )
+    .filter((product) => {
+      if (category === "all") return true;
+      return product.category === category;
+    })
+    .filter((product) => {
+      switch (priceRange) {
+        case "0-49":
+          return product.price <= 49;
+        case "50-99":
+          return product.price >= 50 && product.price <= 99;
+        case "100+":
+          return product.price >= 100;
+        default:
+          return true;
+      }
+    });
 
-  const searchFilteredProducts = applyFilters(items);
-  const totalPages = Math.ceil(searchFilteredProducts.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
-  const currentProducts = searchFilteredProducts.slice(
+  const currentProducts = filteredProducts.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
@@ -253,10 +247,7 @@ const PageHeader = ({
     <h1 className="text-2xl font-bold dark:text-white">Fake Products Store</h1>
     <div className="flex items-center gap-2">
       <ThemeToggle />
-      <LikeButton
-        isLiked={showFavorites}
-        onClick={handleToggleShowFavorites}
-      />
+      <LikeButton isLiked={showFavorites} onClick={handleToggleShowFavorites} />
       <Button onClick={() => navigate("/create-product")}>
         Create Product
       </Button>
