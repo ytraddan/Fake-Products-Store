@@ -18,9 +18,16 @@ const initialState: ProductsState = {
 
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
-  async () => {
-    const res = await getProducts();
-    return res;
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await getProducts();
+      return res;
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      }
+      return rejectWithValue("Unknown error");
+    }
   },
 );
 
@@ -61,7 +68,7 @@ const productsSlice = createSlice({
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to fetch products";
+        state.error = action.payload as string;
       });
   },
 });

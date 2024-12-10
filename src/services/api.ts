@@ -1,13 +1,22 @@
 import { Product } from "@/types/product";
-  
+
 const API_URL = "https://fakestoreapi.com";
 
 export async function getProducts(): Promise<Product[]> {
-  const res = await fetch(`${API_URL}/products`);
-  if (!res.ok) {
-    throw new Error("Failed to fetch products");
+  try {
+    const res = await fetch(`${API_URL}/products`);
+
+    if (!res.ok) {
+      throw new Error(`HTTP error status: ${res.status}`);
+    }
+
+    return res.json();
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    throw new Error("Unknown error");
   }
-  return res.json();
 }
 
 // export async function AddProduct(

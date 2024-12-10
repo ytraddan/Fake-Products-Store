@@ -55,7 +55,7 @@ export const Products = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [showFavorites, setShowFavorites] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const { items, loading, favorites } = useSelector(
+  const { items, favorites, loading, error } = useSelector(
     (state: RootState) => state.products,
   );
   const [currentPage, setCurrentPage] = useState(1);
@@ -142,6 +142,17 @@ export const Products = () => {
 
   if (loading) {
     return <LoadingSkeleton itemsPerPage={itemsPerPage} />;
+  }
+
+  if (error) {
+    return (
+      <div className="mt-20 flex h-screen flex-col items-center">
+        <h1 className="text-3xl font-bold text-red-500">
+          Failed to load products
+        </h1>
+        <p className="text-md text-gray-500">{error}</p>
+      </div>
+    );
   }
 
   return (
