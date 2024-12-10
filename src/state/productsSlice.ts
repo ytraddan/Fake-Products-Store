@@ -48,6 +48,9 @@ const productsSlice = createSlice({
     },
     deleteProduct: (state, action: PayloadAction<number>) => {
       state.items = state.items.filter((item) => item.id !== action.payload);
+      state.favorites = state.favorites.filter(
+        (favId) => favId !== action.payload,
+      );
     },
     updateProduct: (state, action: PayloadAction<Product>) => {
       const { id, ...updatedProduct } = action.payload;
