@@ -30,19 +30,10 @@ import {
 } from "@/components/ui/select";
 import { LoadingImage } from "@/components/ui/LoadingImage";
 
-type ProductCardProps = {
-  product: Product;
-  handleCardClick: (id: number) => void;
-  handleDelete: (id: number) => void;
-  handleToggleFavorite: (id: number) => void;
-  isLiked: (id: number) => boolean;
-  navigate: (path: string) => void;
-};
 
 type PageHeaderProps = {
   showFavorites: boolean;
   handleToggleShowFavorites: () => void;
-  navigate: (path: string) => void;
 };
 
 type NavigationProps = {
@@ -51,9 +42,18 @@ type NavigationProps = {
   handlePageChange: (page: number) => void;
 };
 
+type CategoryFilterProps = {
+  category: string;
+  categories: string[];
+  setCategory: (value: string) => void;
+};
+
+type PriceFilterProps = {
+  priceRange: string;
+  setPriceRange: (value: string) => void;
+};
+
 export const Products = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
   const { items, favorites, loading, error } = useSelector(
     (state: RootState) => state.products,
   );
@@ -106,22 +106,6 @@ export const Products = () => {
     setCurrentPage(1);
   };
 
-  const handleCardClick = (id: number) => {
-    navigate(`/products/${id}`);
-  };
-
-  const handleDelete = (id: number) => {
-    dispatch(deleteProduct(id));
-  };
-
-  const handleToggleFavorite = (id: number) => {
-    dispatch(toggleFavorite(id));
-  };
-
-  const isLiked = (id: number) => {
-    return favorites.includes(id);
-  };
-
   const handleToggleShowFavorites = () => {
     setShowFavorites(!showFavorites);
     setCurrentPage(1);
@@ -161,7 +145,6 @@ export const Products = () => {
       <PageHeader
         showFavorites={showFavorites}
         handleToggleShowFavorites={handleToggleShowFavorites}
-        navigate={navigate}
       />
 
       <div className="my-6 flex flex-col gap-4 sm:flex-row">
@@ -187,11 +170,6 @@ export const Products = () => {
           <ProductCard
             key={product.id}
             product={product}
-            handleCardClick={handleCardClick}
-            handleDelete={handleDelete}
-            handleToggleFavorite={handleToggleFavorite}
-            isLiked={isLiked}
-            navigate={navigate}
           />
         ))}
       </div>
@@ -206,39 +184,38 @@ export const Products = () => {
   );
 };
 
-const CategoryFilter = ({
-  category,
-  categories,
-  setCategory,
-}: {
-  category: string;
-  categories: string[];
-  setCategory: (value: string) => void;
-}) => (
-  <Select value={category} onValueChange={setCategory}>
-    <SelectTrigger className="w-40">
-      <SelectValue placeholder="Category" />
-    </SelectTrigger>
-    <SelectContent className="relative" position="popper">
-      <SelectItem value="all">All Categories</SelectItem>
-      {categories.map((category) => (
-        <SelectItem key={category} value={category}>
-          {category.charAt(0).toUpperCase() + category.slice(1)}
-        </SelectItem>
-      ))}
-    </SelectContent>
-  </Select>
-);
+const PageHeader = ({
+  showFavorites,
+  handleToggleShowFavorites,
+}: PageHeaderProps) => {
+  const navigate = useNavigate();
+  
+  return (
+    <div className="flex items-start justify-between">
+      <h1 className="text-2xl font-bold dark:text-white">
+        Fake Products Store
+      </h1>
+      <div className="flex items-center gap-2">
+        <ThemeToggle />
+        <LikeButton
+          isLiked={showFavorites}
+          onClick={handleToggleShowFavorites}
+        />
+        <Button onClick={() => navigate("/create-product")}>
+          Create Product
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 const PriceFilter = ({
   priceRange,
   setPriceRange,
-}: {
-  priceRange: string;
-  setPriceRange: (value: string) => void;
-}) => (
-  <Select value={priceRange} onValueChange={setPriceRange}>
-    <SelectTrigger className="w-32">
+}: PriceFilterProps) => {
+  return (
+    <Select value={priceRange} onValueChange={setPriceRange}>
+      <SelectTrigger className="w-32">
       <SelectValue placeholder="Price Range" />
     </SelectTrigger>
     <SelectContent className="relative" position="popper">
@@ -247,82 +224,103 @@ const PriceFilter = ({
       <SelectItem value="50-99">$50 - $99</SelectItem>
       <SelectItem value="100+">$100+</SelectItem>
     </SelectContent>
-  </Select>
-);
+    </Select>
+  );
+};
 
-const PageHeader = ({
-  showFavorites,
-  handleToggleShowFavorites,
-  navigate,
-}: PageHeaderProps) => (
-  <div className="flex items-start justify-between">
-    <h1 className="text-2xl font-bold dark:text-white">Fake Products Store</h1>
-    <div className="flex items-center gap-2">
-      <ThemeToggle />
-      <LikeButton isLiked={showFavorites} onClick={handleToggleShowFavorites} />
-      <Button onClick={() => navigate("/create-product")}>
-        Create Product
-      </Button>
-    </div>
-  </div>
-);
+const CategoryFilter = ({
+  category,
+  categories,
+  setCategory,
+}: CategoryFilterProps) => {
+  return (
+    <Select value={category} onValueChange={setCategory}>
+      <SelectTrigger className="w-40">
+        <SelectValue placeholder="Category" />
+      </SelectTrigger>
+      <SelectContent className="relative" position="popper">
+        <SelectItem value="all">All Categories</SelectItem>
+        {categories.map((category) => (
+          <SelectItem key={category} value={category}>
+            {category.charAt(0).toUpperCase() + category.slice(1)}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+};
 
-const ProductCard = ({
-  product,
-  handleCardClick,
-  handleDelete,
-  handleToggleFavorite,
-  isLiked,
-  navigate,
-}: ProductCardProps) => (
-  <Card className="overflow-hidden">
-    <CardHeader className="p-4">
-      <CardTitle className="flex items-center justify-between">
-        <span className="max-w-64 truncate">{product.title}</span>
-        <span>${product.price}</span>
-      </CardTitle>
-    </CardHeader>
-    <CardContent className="px-4 pb-4 pt-2">
-      <div
-        className="cursor-pointer"
-        onClick={() => handleCardClick(product.id)}
-      >
-        <LoadingImage
-          src={product.image}
-          alt={product.title}
-          className="mb-4 h-20 sm:h-44"
-        />
-        <p className="line-clamp-2 text-sm text-gray-500 first-letter:uppercase">
-          {product.description}
-        </p>
-      </div>
-      <div className="mt-2 flex items-center justify-between">
-        <div className="flex gap-1 sm:gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="p-2 sm:p-3"
-            onClick={() => navigate(`/products/${product.id}/edit`)}
-          >
-            Edit
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="p-2 sm:p-3"
-            onClick={() => handleDelete(product.id)}
-          >
-            Delete
-          </Button>
+const ProductCard = ({ product }: { product: Product }) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const { favorites } = useSelector((state: RootState) => state.products);
+
+  const handleCardClick = (id: number) => {
+    navigate(`/products/${id}`);
+  };
+
+  const handleDelete = (id: number) => {
+    dispatch(deleteProduct(id));
+  };
+
+  const handleToggleFavorite = (id: number) => {
+    dispatch(toggleFavorite(id));
+  };
+
+  const isLiked = (id: number) => {
+    return favorites.includes(id);
+  };
+
+  return (
+    <Card className="overflow-hidden">
+      <CardHeader className="p-4">
+        <CardTitle className="flex items-center justify-between">
+          <span className="max-w-64 truncate">{product.title}</span>
+          <span>${product.price}</span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="px-4 pb-4 pt-2">
+        <div
+          className="cursor-pointer"
+          onClick={() => handleCardClick(product.id)}
+        >
+          <LoadingImage
+            src={product.image}
+            alt={product.title}
+            className="mb-4 h-20 sm:h-44"
+          />
+          <p className="line-clamp-2 text-sm text-gray-500 first-letter:uppercase">
+            {product.description}
+          </p>
         </div>
-        <LikeButton
-          isLiked={isLiked(product.id)}
-          onClick={() => handleToggleFavorite(product.id)}
-        />
-      </div>
-    </CardContent>
-  </Card>
-);
+        <div className="mt-2 flex items-center justify-between">
+          <div className="flex gap-1 sm:gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="p-2 sm:p-3"
+              onClick={() => navigate(`/products/${product.id}/edit`)}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="p-2 sm:p-3"
+              onClick={() => handleDelete(product.id)}
+            >
+              Delete
+            </Button>
+          </div>
+          <LikeButton
+            isLiked={isLiked(product.id)}
+            onClick={() => handleToggleFavorite(product.id)}
+          />
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 const Navigation = ({
   currentPage,
@@ -350,6 +348,7 @@ const Navigation = ({
           <PaginationLink
             onClick={() => handlePageChange(i + 1)}
             isActive={currentPage === i + 1}
+            className={"cursor-pointer"}
           >
             {i + 1}
           </PaginationLink>
