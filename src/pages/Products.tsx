@@ -32,10 +32,10 @@ import { LoadingImage } from "@/components/ui/LoadingImage";
 
 type ProductCardProps = {
   product: Product;
-  handleProductClick: (id: number) => void;
+  handleCardClick: (id: number) => void;
   handleDelete: (id: number) => void;
   handleToggleFavorite: (id: number) => void;
-  handleIsLiked: (id: number) => boolean;
+  isLiked: (id: number) => boolean;
   navigate: (path: string) => void;
 };
 
@@ -54,18 +54,18 @@ type NavigationProps = {
 export const Products = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const [showFavorites, setShowFavorites] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
   const { items, favorites, loading, error } = useSelector(
     (state: RootState) => state.products,
   );
+  const [showFavorites, setShowFavorites] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-
   const [priceRange, setPriceRange] = useState<string>("all");
   const [category, setCategory] = useState<string>("all");
 
   const isLg = useMediaQuery("(min-width: 1024px)");
   const isMd = useMediaQuery("(min-width: 768px)");
+
   const itemsPerPage = isLg ? 8 : isMd ? 6 : 4;
 
   const categories = [...new Set(items.map((item) => item.category))];
@@ -101,12 +101,12 @@ export const Products = () => {
     currentPage * itemsPerPage,
   );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
     setCurrentPage(1);
   };
 
-  const handleProductClick = (id: number) => {
+  const handleCardClick = (id: number) => {
     navigate(`/products/${id}`);
   };
 
@@ -118,7 +118,7 @@ export const Products = () => {
     dispatch(toggleFavorite(id));
   };
 
-  const handleIsLiked = (id: number) => {
+  const isLiked = (id: number) => {
     return favorites.includes(id);
   };
 
@@ -127,12 +127,12 @@ export const Products = () => {
     setCurrentPage(1);
   };
 
-  const handleSetPriceRange = (value: string) => {
+  const handlePriceRangeChange = (value: string) => {
     setPriceRange(value);
     setCurrentPage(1);
   };
 
-  const handleSetCategory = (value: string) => {
+  const handleCategoryChange = (value: string) => {
     setCategory(value);
     setCurrentPage(1);
   };
@@ -168,17 +168,17 @@ export const Products = () => {
         <Input
           placeholder="Search for products..."
           value={searchTerm}
-          onChange={(e) => handleChange(e)}
+          onChange={(e) => handleSearchTermChange(e)}
         />
         <div className="flex gap-2">
           <PriceFilter
             priceRange={priceRange}
-            setPriceRange={handleSetPriceRange}
+            setPriceRange={handlePriceRangeChange}
           />
           <CategoryFilter
             category={category}
             categories={categories}
-            setCategory={handleSetCategory}
+            setCategory={handleCategoryChange}
           />
         </div>
       </div>
@@ -187,10 +187,10 @@ export const Products = () => {
           <ProductCard
             key={product.id}
             product={product}
-            handleProductClick={handleProductClick}
+            handleCardClick={handleCardClick}
             handleDelete={handleDelete}
             handleToggleFavorite={handleToggleFavorite}
-            handleIsLiked={handleIsLiked}
+            isLiked={isLiked}
             navigate={navigate}
           />
         ))}
@@ -269,10 +269,10 @@ const PageHeader = ({
 
 const ProductCard = ({
   product,
-  handleProductClick,
+  handleCardClick,
   handleDelete,
   handleToggleFavorite,
-  handleIsLiked,
+  isLiked,
   navigate,
 }: ProductCardProps) => (
   <Card className="overflow-hidden">
@@ -285,7 +285,7 @@ const ProductCard = ({
     <CardContent className="px-4 pb-4 pt-2">
       <div
         className="cursor-pointer"
-        onClick={() => handleProductClick(product.id)}
+        onClick={() => handleCardClick(product.id)}
       >
         <LoadingImage
           src={product.image}
@@ -316,7 +316,7 @@ const ProductCard = ({
           </Button>
         </div>
         <LikeButton
-          isLiked={handleIsLiked(product.id)}
+          isLiked={isLiked(product.id)}
           onClick={() => handleToggleFavorite(product.id)}
         />
       </div>
