@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { deleteProduct } from "@/state/productsSlice";
 import { AppDispatch } from "@/state/store";
 import { toggleFavorite } from "@/state/productsSlice";
+import { LoadingImage } from "@/components/ui/LoadingImage";
 
 export const ProductDetails = () => {
   const { id } = useParams();
@@ -55,10 +56,10 @@ export const ProductDetails = () => {
         </CardHeader>
         <CardContent>
           <div className="flex justify-center">
-            <img
+            <LoadingImage
               src={product.image}
               alt={product.title}
-              className="max-h-72 rounded-lg"
+              className="max-h-96"
             />
           </div>
           <Rating product={product} />

@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { LoadingImage } from "@/components/ui/LoadingImage";
 
 type ProductCardProps = {
   product: Product;
@@ -286,10 +287,10 @@ const ProductCard = ({
         className="cursor-pointer"
         onClick={() => handleProductClick(product.id)}
       >
-        <img
+        <LoadingImage
           src={product.image}
           alt={product.title}
-          className="mx-auto mb-4 h-20 rounded-xl sm:h-44"
+          className="mb-4 h-20 sm:h-44"
         />
         <p className="line-clamp-2 text-sm text-gray-500 first-letter:uppercase">
           {product.description}
