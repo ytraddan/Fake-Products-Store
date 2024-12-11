@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { ProductCard } from "@/components/ProductCard";
+import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { RootState } from "@/state/store";
 import {
   Pagination,
@@ -125,14 +126,7 @@ export const Products = () => {
   }
 
   if (error) {
-    return (
-      <div className="mt-20 flex h-screen flex-col items-center">
-        <h1 className="text-3xl font-bold text-red-500">
-          Failed to load products
-        </h1>
-        <p className="text-md text-gray-500">{error}</p>
-      </div>
-    );
+    return <ErrorMessage title="Failed to load products" message={error} />;
   }
 
   return (

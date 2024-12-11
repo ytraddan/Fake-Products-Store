@@ -27,14 +27,17 @@ export const ProductForm = ({
   title,
 }: ProductFormProps) => {
   const navigate = useNavigate();
+
+  const defaultValues = initialData ?? {
+    title: "",
+    price: 0,
+    description: "",
+    category: "",
+    image: "",
+  };
+
   const form = useForm<ProductFormData>({
-    defaultValues: initialData ?? {
-      title: "",
-      price: 0,
-      description: "",
-      category: "",
-      image: "",
-    },
+    defaultValues,
   });
 
   return (

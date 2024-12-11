@@ -4,18 +4,19 @@ import { AppDispatch, RootState } from "@/state/store";
 import { Product } from "@/types/product";
 import { updateProduct } from "@/state/productsSlice";
 import { ProductForm } from "@/components/ProductForm";
+import { ErrorMessage } from "@/components/ui/ErrorMessage";
 
 export const EditProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  
+
   const product = useSelector((state: RootState) =>
-    state.products.items.find((p) => p.id === Number(id))
+    state.products.items.find((p) => p.id === Number(id)),
   );
 
   if (!product) {
-    return <div>Product not found</div>;
+    return <ErrorMessage title="Error" message="Product not found" />;
   }
 
   const onSubmit = async (data: Omit<Product, "id" | "rating">) => {
@@ -36,4 +37,4 @@ export const EditProduct = () => {
       title="Edit Product"
     />
   );
-}; 
+};

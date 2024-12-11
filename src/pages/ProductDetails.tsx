@@ -11,6 +11,7 @@ import { deleteProduct } from "@/state/productsSlice";
 import { AppDispatch } from "@/state/store";
 import { toggleFavorite } from "@/state/productsSlice";
 import { LoadingImage } from "@/components/ui/LoadingImage";
+import { ErrorMessage } from "@/components/ui/ErrorMessage";
 
 export const ProductDetails = () => {
   const { id } = useParams();
@@ -26,7 +27,7 @@ export const ProductDetails = () => {
   }
 
   if (!product) {
-    return <NotFoundMessage />;
+    return <ErrorMessage title="Error" message="Product not found" />;
   }
 
   const handleDelete = () => {
@@ -126,16 +127,6 @@ const LoadingSkeleton = () => (
         <Skeleton className="h-4 w-full" />
         <Skeleton className="my-4 h-4 w-3/4" />
         <Skeleton className="h-10 w-32" />
-      </CardContent>
-    </Card>
-  </div>
-);
-
-const NotFoundMessage = () => (
-  <div className="container mx-auto flex min-h-screen items-center p-4">
-    <Card className="mx-auto w-full max-w-2xl">
-      <CardContent className="p-6 text-2xl font-bold">
-        <p className="text-center">Product not found</p>
       </CardContent>
     </Card>
   </div>
