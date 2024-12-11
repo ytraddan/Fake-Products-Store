@@ -1,7 +1,6 @@
 import { useParams, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Product } from "@/types/product";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { useSelector } from "react-redux";
@@ -62,7 +61,7 @@ export const ProductDetails = () => {
               className="max-h-96"
             />
           </div>
-          <Rating product={product} />
+          <Rating rate={product.rating.rate} count={product.rating.count} />
           <p className="mb-4 text-gray-500 first-letter:uppercase">
             {product.description}
           </p>
@@ -97,19 +96,16 @@ export const ProductDetails = () => {
   );
 };
 
-const Rating = ({ product }: { product: Product }) => {
+const Rating = ({ rate, count }: { rate: number; count: number }) => {
   return (
     <div className="my-4 flex items-center gap-2 text-zinc-950 dark:text-zinc-100">
       <div className="flex">
         {[...Array(5)].map((_, i) => (
-          <Star
-            key={i}
-            fill={i < Math.floor(product.rating.rate) ? "currentColor" : "none"}
-          />
+          <Star key={i} fill={i < Math.floor(rate) ? "currentColor" : "none"} />
         ))}
       </div>
       <span className="text-sm text-gray-500 dark:text-gray-400">
-        ({product.rating.count} reviews)
+        ({count} reviews)
       </span>
     </div>
   );
