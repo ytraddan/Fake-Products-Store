@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Input } from "@/components/ui/input";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { ProductCard } from "@/components/ProductCard";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
@@ -53,11 +54,17 @@ export const Products = () => {
   const { items, favorites, loading, error } = useSelector(
     (state: RootState) => state.products,
   );
-  const [showFavorites, setShowFavorites] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [showFavorites, setShowFavorites] = useLocalStorage<boolean>(
+    "showFavorites",
+    false,
+  );
+  const [searchTerm, setSearchTerm] = useLocalStorage<string>("searchTerm", "");
   const [currentPage, setCurrentPage] = useState(1);
-  const [priceRange, setPriceRange] = useState<string>("all");
-  const [category, setCategory] = useState<string>("all");
+  const [priceRange, setPriceRange] = useLocalStorage<string>(
+    "priceRange",
+    "all",
+  );
+  const [category, setCategory] = useLocalStorage<string>("category", "all");
 
   const isLg = useMediaQuery("(min-width: 1024px)");
   const isMd = useMediaQuery("(min-width: 768px)");
@@ -156,10 +163,7 @@ export const Products = () => {
       </div>
       <div className="sm:mb-18 mb-20 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
         {currentProducts.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-          />
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
       {totalPages > 1 && (
@@ -198,21 +202,18 @@ const PageHeader = ({
   );
 };
 
-const PriceFilter = ({
-  priceRange,
-  setPriceRange,
-}: PriceFilterProps) => {
+const PriceFilter = ({ priceRange, setPriceRange }: PriceFilterProps) => {
   return (
     <Select value={priceRange} onValueChange={setPriceRange}>
       <SelectTrigger className="w-32">
-      <SelectValue placeholder="Price Range" />
-    </SelectTrigger>
-    <SelectContent className="relative" position="popper">
-      <SelectItem value="all">All Prices</SelectItem>
-      <SelectItem value="0-49">$0 - $49</SelectItem>
-      <SelectItem value="50-99">$50 - $99</SelectItem>
-      <SelectItem value="100+">$100+</SelectItem>
-    </SelectContent>
+        <SelectValue placeholder="Price Range" />
+      </SelectTrigger>
+      <SelectContent className="relative" position="popper">
+        <SelectItem value="all">All Prices</SelectItem>
+        <SelectItem value="0-49">$0 - $49</SelectItem>
+        <SelectItem value="50-99">$50 - $99</SelectItem>
+        <SelectItem value="100+">$100+</SelectItem>
+      </SelectContent>
     </Select>
   );
 };

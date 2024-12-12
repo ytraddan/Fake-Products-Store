@@ -13,6 +13,7 @@ export const CreateProduct = () => {
     dispatch(
       addProduct({ ...data, id: Date.now(), rating: { rate: 0, count: 0 } }),
     );
+    window.localStorage.clear();
     navigate("/products");
   };
 

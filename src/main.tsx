@@ -10,6 +10,7 @@ import { EditProduct } from "./pages/EditProduct";
 import { fetchProducts } from "./state/productsSlice";
 import "./index.css";
 
+window.localStorage.clear();
 store.dispatch(fetchProducts());
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
