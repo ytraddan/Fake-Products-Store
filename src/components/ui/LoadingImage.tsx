@@ -2,9 +2,16 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Skeleton } from "./skeleton";
 
+interface LoadingImageProps {
+  className: string;
+  src: string;
+  alt: string;
+}
 
-export const LoadingImage = ({ className, src, alt }: React.ImgHTMLAttributes<HTMLImageElement>) => {
-  const [isLoading, setIsLoading] = useState(true);
+const loadedImages = new Set<string>();
+
+export const LoadingImage = ({ className, src, alt }: LoadingImageProps) => {
+  const [isLoading, setIsLoading] = useState(() => !loadedImages.has(src));
 
   return (
     <div className={cn("relative", className)}>
@@ -18,7 +25,10 @@ export const LoadingImage = ({ className, src, alt }: React.ImgHTMLAttributes<HT
           "mx-auto h-full rounded-xl transition-opacity duration-300",
           isLoading ? "opacity-0" : "opacity-100",
         )}
-        onLoad={() => setIsLoading(false)}
+        onLoad={() => {
+          setIsLoading(false);
+          loadedImages.add(src);
+        }}
       />
     </div>
   );
