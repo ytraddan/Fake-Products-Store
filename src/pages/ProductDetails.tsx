@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate, Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -39,9 +39,7 @@ export const ProductDetails = () => {
     dispatch(toggleFavorite(product.id));
   };
 
-  const handleIsLiked = () => {
-    return favorites.includes(product.id);
-  };
+  const isLiked = favorites.includes(product.id);
 
   return (
     <div className="container mx-auto flex min-h-screen items-center p-4">
@@ -68,15 +66,11 @@ export const ProductDetails = () => {
           </p>
           <div className="flex justify-between">
             <div className="flex gap-2">
-              <Button variant="default" onClick={() => navigate("/products")}>
-                Back to Products
+              <Button variant="default" asChild>
+                <Link to="/products">Back to Products</Link>
               </Button>
-              <Button
-                variant="outline"
-                className="p-2 sm:p-3"
-                onClick={() => navigate(`/products/${product.id}/edit`)}
-              >
-                Edit
+              <Button variant="outline" className="p-2 sm:p-3" asChild>
+                <Link to={`/products/${product.id}/edit`}>Edit</Link>
               </Button>
               <Button
                 variant="ghost"
@@ -86,10 +80,7 @@ export const ProductDetails = () => {
                 Delete
               </Button>
             </div>
-            <LikeButton
-              isLiked={handleIsLiked()}
-              onClick={handleToggleFavorite}
-            />
+            <LikeButton isLiked={isLiked} onClick={handleToggleFavorite} />
           </div>
         </CardContent>
       </Card>

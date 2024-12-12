@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -104,7 +104,7 @@ export const Products = () => {
     currentPage * itemsPerPage,
   );
 
-  const handleSearchTermChange = (searchInput:string) => {
+  const handleSearchTermChange = (searchInput: string) => {
     setSearchTerm(searchInput);
     setCurrentPage(1);
   };
@@ -181,8 +181,6 @@ const PageHeader = ({
   showFavorites,
   handleToggleShowFavorites,
 }: PageHeaderProps) => {
-  const navigate = useNavigate();
-
   return (
     <div className="flex items-start justify-between">
       <h1 className="text-2xl font-bold dark:text-white">
@@ -194,8 +192,8 @@ const PageHeader = ({
           isLiked={showFavorites}
           onClick={handleToggleShowFavorites}
         />
-        <Button onClick={() => navigate("/create-product")}>
-          Create Product
+        <Button asChild>
+          <Link to="/create-product">Create Product</Link>
         </Button>
       </div>
     </div>

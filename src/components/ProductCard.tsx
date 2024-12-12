@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Product } from "@/types/product";
 import { useDispatch } from "react-redux";
 import { toggleFavorite } from "@/state/productsSlice";
@@ -22,6 +22,7 @@ export const ProductCard = ({ product }: { product: Product }) => {
 
   const handleDelete = (id: number) => {
     dispatch(deleteProduct(id));
+    navigate("/products");
   };
 
   const handleToggleFavorite = (id: number) => {
@@ -56,13 +57,8 @@ export const ProductCard = ({ product }: { product: Product }) => {
         </div>
         <div className="mt-2 flex items-center justify-between">
           <div className="flex gap-1 sm:gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="p-2 sm:p-3"
-              onClick={() => navigate(`/products/${product.id}/edit`)}
-            >
-              Edit
+            <Button variant="outline" size="sm" className="p-2 sm:p-3" asChild>
+              <Link to={`/products/${product.id}/edit`}>Edit</Link>
             </Button>
             <Button
               variant="ghost"
