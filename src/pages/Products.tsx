@@ -97,8 +97,8 @@ export const Products = () => {
     currentPage * itemsPerPage,
   );
 
-  const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+  const handleSearchTermChange = (searchInput:string) => {
+    setSearchTerm(searchInput);
     setCurrentPage(1);
   };
 
@@ -140,7 +140,7 @@ export const Products = () => {
         <Input
           placeholder="Search for products..."
           value={searchTerm}
-          onChange={(e) => handleSearchTermChange(e)}
+          onChange={(e) => handleSearchTermChange(e.target.value)}
         />
         <div className="flex gap-2">
           <PriceFilter
