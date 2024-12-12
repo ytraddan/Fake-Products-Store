@@ -28,28 +28,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type PageHeaderProps = {
-  showFavorites: boolean;
-  handleToggleShowFavorites: () => void;
-};
-
-type NavigationProps = {
-  currentPage: number;
-  totalPages: number;
-  handlePageChange: (page: number) => void;
-};
-
-type CategoryFilterProps = {
-  category: string;
-  categories: string[];
-  setCategory: (value: string) => void;
-};
-
-type PriceFilterProps = {
-  priceRange: string;
-  setPriceRange: (value: string) => void;
-};
-
 export const Products = () => {
   const { items, favorites, loading, error } = useSelector(
     (state: RootState) => state.products,
@@ -138,10 +116,7 @@ export const Products = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <PageHeader
-        showFavorites={showFavorites}
-        handleToggleShowFavorites={handleToggleShowFavorites}
-      />
+      <PageHeader />
 
       <div className="my-6 flex flex-col gap-4 sm:flex-row">
         <Input
@@ -150,15 +125,8 @@ export const Products = () => {
           onChange={(e) => handleSearchTermChange(e.target.value)}
         />
         <div className="flex gap-2">
-          <PriceFilter
-            priceRange={priceRange}
-            setPriceRange={handlePriceRangeChange}
-          />
-          <CategoryFilter
-            category={category}
-            categories={categories}
-            setCategory={handleCategoryChange}
-          />
+          <PriceFilter />
+          <CategoryFilter />
         </div>
       </div>
       <div className="sm:mb-18 mb-20 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
@@ -166,160 +134,147 @@ export const Products = () => {
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
-      {totalPages > 1 && (
-        <Navigation
-          currentPage={currentPage}
-          totalPages={totalPages}
-          handlePageChange={handlePageChange}
-        />
-      )}
+      {totalPages > 1 && <Navigation />}
     </div>
   );
-};
 
-const PageHeader = ({
-  showFavorites,
-  handleToggleShowFavorites,
-}: PageHeaderProps) => {
-  return (
-    <div className="flex items-start justify-between">
-      <h1 className="text-2xl font-bold dark:text-white">
-        Fake Products Store
-      </h1>
-      <div className="flex items-center gap-2">
-        <ThemeToggle />
-        <LikeButton
-          isLiked={showFavorites}
-          onClick={handleToggleShowFavorites}
-        />
-        <Button asChild>
-          <Link to="/create-product">Create Product</Link>
-        </Button>
+  function PageHeader() {
+    return (
+      <div className="flex items-start justify-between">
+        <h1 className="text-2xl font-bold dark:text-white">
+          Fake Products Store
+        </h1>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <LikeButton
+            isLiked={showFavorites}
+            onClick={handleToggleShowFavorites}
+          />
+          <Button asChild>
+            <Link to="/create-product">Create Product</Link>
+          </Button>
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
 
-const PriceFilter = ({ priceRange, setPriceRange }: PriceFilterProps) => {
-  return (
-    <Select value={priceRange} onValueChange={setPriceRange}>
-      <SelectTrigger className="w-32">
-        <SelectValue placeholder="Price Range" />
-      </SelectTrigger>
-      <SelectContent className="relative" position="popper">
-        <SelectItem value="all">All Prices</SelectItem>
-        <SelectItem value="0-49">$0 - $49</SelectItem>
-        <SelectItem value="50-99">$50 - $99</SelectItem>
-        <SelectItem value="100+">$100+</SelectItem>
-      </SelectContent>
-    </Select>
-  );
-};
+  function PriceFilter() {
+    return (
+      <Select value={priceRange} onValueChange={handlePriceRangeChange}>
+        <SelectTrigger className="w-32">
+          <SelectValue placeholder="Price Range" />
+        </SelectTrigger>
+        <SelectContent className="relative" position="popper">
+          <SelectItem value="all">All Prices</SelectItem>
+          <SelectItem value="0-49">$0 - $49</SelectItem>
+          <SelectItem value="50-99">$50 - $99</SelectItem>
+          <SelectItem value="100+">$100+</SelectItem>
+        </SelectContent>
+      </Select>
+    );
+  }
 
-const CategoryFilter = ({
-  category,
-  categories,
-  setCategory,
-}: CategoryFilterProps) => {
-  return (
-    <Select value={category} onValueChange={setCategory}>
-      <SelectTrigger className="w-40">
-        <SelectValue placeholder="Category" />
-      </SelectTrigger>
-      <SelectContent className="relative" position="popper">
-        <SelectItem value="all">All Categories</SelectItem>
-        {categories.map((category) => (
-          <SelectItem key={category} value={category}>
-            {category.charAt(0).toUpperCase() + category.slice(1)}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  );
-};
+  function CategoryFilter() {
+    return (
+      <Select value={category} onValueChange={handleCategoryChange}>
+        <SelectTrigger className="w-40">
+          <SelectValue placeholder="Category" />
+        </SelectTrigger>
+        <SelectContent className="relative" position="popper">
+          <SelectItem value="all">All Categories</SelectItem>
+          {categories.map((category) => (
+            <SelectItem key={category} value={category}>
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    );
+  }
 
-const Navigation = ({
-  currentPage,
-  totalPages,
-  handlePageChange,
-}: NavigationProps) => (
-  <Pagination className="fixed bottom-8 left-0 right-0 w-fit rounded-lg bg-zinc-100/80 backdrop-blur-sm dark:bg-zinc-900">
-    <PaginationContent>
-      <PaginationItem>
-        <PaginationPrevious
-          onClick={() => {
-            if (currentPage > 1) {
-              handlePageChange(currentPage - 1);
-            }
-          }}
-          className={
-            currentPage === 1
-              ? "pointer-events-none opacity-50"
-              : "cursor-pointer"
-          }
-        />
-      </PaginationItem>
-      {Array.from({ length: totalPages }, (_, i) => (
-        <PaginationItem key={i + 1}>
-          <PaginationLink
-            onClick={() => handlePageChange(i + 1)}
-            isActive={currentPage === i + 1}
-            className={"cursor-pointer"}
-          >
-            {i + 1}
-          </PaginationLink>
-        </PaginationItem>
-      ))}
-      <PaginationItem>
-        <PaginationNext
-          onClick={() => {
-            if (currentPage < totalPages) {
-              handlePageChange(currentPage + 1);
-            }
-          }}
-          className={
-            currentPage === totalPages
-              ? "pointer-events-none opacity-50"
-              : "cursor-pointer"
-          }
-        />
-      </PaginationItem>
-    </PaginationContent>
-  </Pagination>
-);
+  function Navigation() {
+    return (
+      <Pagination className="fixed bottom-8 left-0 right-0 w-fit rounded-lg bg-zinc-100/80 backdrop-blur-sm dark:bg-zinc-900">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={() => {
+                if (currentPage > 1) {
+                  handlePageChange(currentPage - 1);
+                }
+              }}
+              className={
+                currentPage === 1
+                  ? "pointer-events-none opacity-50"
+                  : "cursor-pointer"
+              }
+            />
+          </PaginationItem>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <PaginationItem key={i + 1}>
+              <PaginationLink
+                onClick={() => handlePageChange(i + 1)}
+                isActive={currentPage === i + 1}
+                className={"cursor-pointer"}
+              >
+                {i + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+          <PaginationItem>
+            <PaginationNext
+              onClick={() => {
+                if (currentPage < totalPages) {
+                  handlePageChange(currentPage + 1);
+                }
+              }}
+              className={
+                currentPage === totalPages
+                  ? "pointer-events-none opacity-50"
+                  : "cursor-pointer"
+              }
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+    );
+  }
 
-const LoadingSkeleton = ({ itemsPerPage }: { itemsPerPage: number }) => (
-  <div className="container mx-auto p-4">
-    <div className="flex items-start justify-between">
-      <Skeleton className="h-8 w-48" />
-      <Skeleton className="h-8 w-32" />
-    </div>
+  function LoadingSkeleton({ itemsPerPage }: { itemsPerPage: number }) {
+    return (
+      <div className="container mx-auto p-4">
+        <div className="flex items-start justify-between">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-8 w-32" />
+        </div>
 
-    <div className="my-7 flex flex-col gap-4 sm:flex-row">
-      <Skeleton className="h-10 w-full" />
-      <div className="flex gap-2">
-        <Skeleton className="h-10 w-32" />
-        <Skeleton className="h-10 w-40" />
+        <div className="my-7 flex flex-col gap-4 sm:flex-row">
+          <Skeleton className="h-10 w-full" />
+          <div className="flex gap-2">
+            <Skeleton className="h-10 w-32" />
+            <Skeleton className="h-10 w-40" />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          {[...Array(itemsPerPage)].map((_, i) => (
+            <Card key={i}>
+              <CardHeader className="p-4">
+                <Skeleton className="h-5 w-full" />
+              </CardHeader>
+              <CardContent className="px-4 pb-4 pt-2">
+                <Skeleton className="mx-auto mb-4 h-20 w-full rounded-xl sm:h-44" />
+                <Skeleton className="mb-2 h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+                <div className="mt-2 flex items-center justify-between">
+                  <Skeleton className="h-8 w-16" />
+                  <Skeleton className="h-8 w-8" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
-    </div>
-
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-      {[...Array(itemsPerPage)].map((_, i) => (
-        <Card key={i}>
-          <CardHeader className="p-4">
-            <Skeleton className="h-5 w-full" />
-          </CardHeader>
-          <CardContent className="px-4 pb-4 pt-2">
-            <Skeleton className="mx-auto mb-4 h-20 w-full rounded-xl sm:h-44" />
-            <Skeleton className="mb-2 h-4 w-full" />
-            <Skeleton className="h-4 w-3/4" />
-            <div className="mt-2 flex items-center justify-between">
-              <Skeleton className="h-8 w-16" />
-              <Skeleton className="h-8 w-8" />
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  </div>
-);
+    );
+  }
+};
