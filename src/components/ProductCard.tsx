@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LoadingImage } from "@/components/ui/LoadingImage";
 import { LikeButton } from "@/components/ui/LikeButton";
+import { Pencil, Trash } from "lucide-react";
 
 export const ProductCard = ({ product }: { product: Product }) => {
   const navigate = useNavigate();
@@ -58,15 +59,19 @@ export const ProductCard = ({ product }: { product: Product }) => {
         <div className="mt-2 flex items-center justify-between">
           <div className="flex gap-1 sm:gap-2">
             <Button variant="outline" size="sm" className="p-2 sm:p-3" asChild>
-              <Link to={`/products/${product.id}/edit`}>Edit</Link>
+              <Link to={`/products/${product.id}/edit`}>
+                <span className="hidden sm:inline">Edit</span>
+                <Pencil className="sm:hidden" />
+              </Link>
             </Button>
             <Button
               variant="ghost"
               size="sm"
-              className="p-2 sm:p-3"
+              className="p-3"
               onClick={() => handleDelete(product.id)}
             >
-              Delete
+              <span className="hidden sm:inline">Delete</span>
+              <Trash className="sm:hidden" />
             </Button>
           </div>
           <LikeButton

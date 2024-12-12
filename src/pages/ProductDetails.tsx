@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
-import { Star } from "lucide-react";
+import { Pencil, Star, Trash } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { deleteProduct } from "@/state/productsSlice";
 import { AppDispatch } from "@/state/store";
@@ -67,17 +67,17 @@ export const ProductDetails = () => {
           <div className="flex justify-between">
             <div className="flex gap-2">
               <Button variant="default" asChild>
-                <Link to="/products">Back to Products</Link>
+                <Link to="/products">Go back</Link>
               </Button>
               <Button variant="outline" className="p-2 sm:p-3" asChild>
-                <Link to={`/products/${product.id}/edit`}>Edit</Link>
+                <Link to={`/products/${product.id}/edit`}>
+                  <span className="hidden sm:inline">Edit</span>
+                  <Pencil className="sm:hidden" />
+                </Link>
               </Button>
-              <Button
-                variant="ghost"
-                className="p-2 sm:p-3"
-                onClick={handleDelete}
-              >
-                Delete
+              <Button variant="ghost" className="p-3" onClick={handleDelete}>
+                <span className="hidden sm:inline">Delete</span>
+                <Trash className="sm:hidden" />
               </Button>
             </div>
             <LikeButton isLiked={isLiked} onClick={handleToggleFavorite} />
