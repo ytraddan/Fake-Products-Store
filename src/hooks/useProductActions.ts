@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { AppDispatch } from "@/state/store";
 import { Product } from "@/types/product";
 import { toast } from "sonner";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import {
   deleteProduct,
   toggleFavorite,
@@ -16,12 +17,13 @@ const truncate = (text: string, maxLength: number) => {
 export const useProductActions = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   const handleDelete = (product: Product) => {
     dispatch(deleteProduct(product.id));
     navigate("/products");
     toast("Deleted", {
-      description: `"${truncate(product.title, 20)}" has been removed`,
+      description: `"${truncate(product.title, isMobile ? 15 : 20)}" has been removed`,
       action: {
         label: "Undo",
         onClick: () => {

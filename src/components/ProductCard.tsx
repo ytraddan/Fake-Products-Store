@@ -38,7 +38,7 @@ export const ProductCard = ({ product }: { product: Product }) => {
             alt={product.title}
             className="mb-4 h-20 sm:h-44"
           />
-          <p className="line-clamp-2 text-sm text-gray-500 first-letter:uppercase">
+          <p className="line-clamp-3 text-xs text-gray-500 first-letter:uppercase sm:line-clamp-2 sm:text-sm">
             {product.description}
           </p>
         </div>

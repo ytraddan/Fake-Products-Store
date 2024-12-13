@@ -33,19 +33,17 @@ export const ProductDetails = () => {
     <div className="container mx-auto flex min-h-screen items-center p-4">
       <Card className="mx-auto w-full max-w-2xl">
         <CardHeader>
-          <CardTitle>
-            <div className="flex items-start justify-between gap-6 text-2xl font-bold">
-              <div className="flex items-start gap-4">
-                <Link
-                  to="/products"
-                  className="rounded-full p-2 transition-colors hover:bg-zinc-200 dark:text-white dark:hover:bg-zinc-700/40"
-                >
-                  <ArrowLeft />
-                </Link>
-                <span>{product.title}</span>
-              </div>
-              <span>${product.price}</span>
+          <CardTitle className="flex items-start justify-between gap-6 text-xl font-bold sm:text-2xl">
+            <div className="flex items-start gap-4">
+              <Link
+                to="/products"
+                className="rounded-full p-2 transition-colors hover:bg-zinc-200 dark:text-white dark:hover:bg-zinc-700/40"
+              >
+                <ArrowLeft />
+              </Link>
+              <span>{product.title}</span>
             </div>
+            <span>${product.price}</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -53,11 +51,11 @@ export const ProductDetails = () => {
             <LoadingImage
               src={product.image}
               alt={product.title}
-              className="max-h-96"
+              className="max-h-64 sm:max-h-96"
             />
           </div>
           <Rating rate={product.rating.rate} count={product.rating.count} />
-          <p className="mb-4 text-gray-500 first-letter:uppercase">
+          <p className="mb-4 text-sm text-gray-500 first-letter:uppercase sm:text-lg">
             {product.description}
           </p>
           <div className="flex justify-between">
@@ -96,8 +94,8 @@ const LoadingSkeleton = () => (
     <Card className="mx-auto w-full max-w-2xl">
       <CardHeader>
         <div className="flex flex-row items-center justify-between">
-          <Skeleton className="h-8 w-48" />
-          <Skeleton className="h-8 w-24" />
+          <Skeleton className="h-8 w-32 sm:w-48" />
+          <Skeleton className="h-8 w-20 sm:w-24" />
         </div>
       </CardHeader>
       <CardContent>
