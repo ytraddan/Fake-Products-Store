@@ -4,10 +4,10 @@ import { Provider } from "react-redux";
 import { store } from "./state/store";
 import { fetchProducts } from "./state/productsSlice";
 import { HashRouter, Route, Routes, Navigate } from "react-router";
-import { Products } from "./pages/Products";
-import { ProductDetails } from "./pages/ProductDetails";
-import { CreateProduct } from "./pages/CreateProduct";
-import { EditProduct } from "./pages/EditProduct";
+import { Products } from "./pages/ProductsPage";
+import { ProductDetails } from "./pages/ProductDetailsPage";
+import { CreateProduct } from "./pages/CreateProductPage";
+import { EditProduct } from "./pages/EditProductPage";
 import { Toaster } from "@/components/ui/sonner";
 import "./index.css";
 
