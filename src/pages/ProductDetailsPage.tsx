@@ -1,5 +1,4 @@
 import { useParams, Link } from "react-router";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LikeButton } from "@/components/ui/LikeButton";
@@ -7,7 +6,7 @@ import { DeleteButton } from "@/components/ui/DeleteButton";
 import { EditButton } from "@/components/ui/EditButton";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
-import { Star } from "lucide-react";
+import { Star, ArrowLeft } from "lucide-react";
 import { LoadingImage } from "@/components/ui/LoadingImage";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { useProductActions } from "@/hooks/useProductActions";
@@ -35,8 +34,16 @@ export const ProductDetails = () => {
       <Card className="mx-auto w-full max-w-2xl">
         <CardHeader>
           <CardTitle>
-            <div className="items-top flex justify-between text-2xl font-bold">
-              <span>{product.title}</span>
+            <div className="flex items-start justify-between gap-6 text-2xl font-bold">
+              <div className="flex items-start gap-4">
+                <Link
+                  to="/products"
+                  className="rounded-full p-2 transition-colors hover:bg-zinc-200 dark:text-white dark:hover:bg-zinc-700/40"
+                >
+                  <ArrowLeft />
+                </Link>
+                <span>{product.title}</span>
+              </div>
               <span>${product.price}</span>
             </div>
           </CardTitle>
@@ -55,9 +62,6 @@ export const ProductDetails = () => {
           </p>
           <div className="flex justify-between">
             <div className="flex gap-2">
-              <Button variant="default" asChild>
-                <Link to="/products">Go back</Link>
-              </Button>
               <DeleteButton onClick={() => handleDelete(product)} />
               <EditButton link={`/products/${product.id}/edit`} />
             </div>
@@ -74,7 +78,7 @@ export const ProductDetails = () => {
 
 const Rating = ({ rate, count }: { rate: number; count: number }) => {
   return (
-    <div className="my-4 flex items-center gap-2 text-zinc-950 dark:text-zinc-100">
+    <div className="mb-4 mt-6 flex items-center gap-2 text-zinc-950 dark:text-zinc-100">
       <div className="flex">
         {[...Array(5)].map((_, i) => (
           <Star key={i} fill={i < Math.floor(rate) ? "currentColor" : "none"} />
