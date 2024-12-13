@@ -1,38 +1,24 @@
 import { Link, useNavigate } from "react-router";
 import { Product } from "@/types/product";
-import { useDispatch } from "react-redux";
-import { toggleFavorite } from "@/state/productsSlice";
-import { RootState } from "@/state/store";
-import { deleteProduct } from "@/state/productsSlice";
-import { AppDispatch } from "@/state/store";
 import { useSelector } from "react-redux";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LoadingImage } from "@/components/ui/LoadingImage";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { Pencil, Trash } from "lucide-react";
+import { useProductActions } from "@/hooks/useProductActions";
+import { RootState } from "@/state/store";
 
 export const ProductCard = ({ product }: { product: Product }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
   const { favorites } = useSelector((state: RootState) => state.products);
+  const { handleDelete, handleToggleFavorite } = useProductActions();
 
   const handleCardClick = (id: number) => {
     navigate(`/products/${id}`);
   };
 
-  const handleDelete = (id: number) => {
-    dispatch(deleteProduct(id));
-    navigate("/products");
-  };
-
-  const handleToggleFavorite = (id: number) => {
-    dispatch(toggleFavorite(id));
-  };
-
-  const isLiked = (id: number) => {
-    return favorites.includes(id);
-  };
+  const isLiked = favorites.includes(product.id);
 
   return (
     <Card>
@@ -68,14 +54,14 @@ export const ProductCard = ({ product }: { product: Product }) => {
               variant="ghost"
               size="sm"
               className="p-3"
-              onClick={() => handleDelete(product.id)}
+              onClick={() => handleDelete(product)}
             >
               <span className="hidden sm:inline">Delete</span>
               <Trash className="sm:hidden" />
             </Button>
           </div>
           <LikeButton
-            isLiked={isLiked(product.id)}
+            isLiked={isLiked}
             onClick={() => handleToggleFavorite(product.id)}
           />
         </div>

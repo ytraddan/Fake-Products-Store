@@ -1,4 +1,4 @@
-import { useParams, useNavigate, Link } from "react-router";
+import { useParams, Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -6,21 +6,19 @@ import { LikeButton } from "@/components/ui/LikeButton";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
 import { Pencil, Star, Trash } from "lucide-react";
-import { useDispatch } from "react-redux";
-import { deleteProduct } from "@/state/productsSlice";
-import { AppDispatch } from "@/state/store";
-import { toggleFavorite } from "@/state/productsSlice";
 import { LoadingImage } from "@/components/ui/LoadingImage";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
+import { useProductActions } from "@/hooks/useProductActions";
 
 export const ProductDetails = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const { handleDelete, handleToggleFavorite } = useProductActions();
   const { items, loading, favorites } = useSelector(
     (state: RootState) => state.products,
   );
+
   const product = items.find((prod) => prod.id === Number(id));
+  const isLiked = favorites.includes(Number(id));
 
   if (loading) {
     return <LoadingSkeleton />;
@@ -29,17 +27,6 @@ export const ProductDetails = () => {
   if (!product) {
     return <ErrorMessage title="Error" message="Product not found" />;
   }
-
-  const handleDelete = () => {
-    dispatch(deleteProduct(product.id));
-    navigate("/products");
-  };
-
-  const handleToggleFavorite = () => {
-    dispatch(toggleFavorite(product.id));
-  };
-
-  const isLiked = favorites.includes(product.id);
 
   return (
     <div className="container mx-auto flex min-h-screen items-center p-4">
@@ -75,12 +62,19 @@ export const ProductDetails = () => {
                   <Pencil className="sm:hidden" />
                 </Link>
               </Button>
-              <Button variant="ghost" className="p-3" onClick={handleDelete}>
+              <Button
+                variant="ghost"
+                className="p-3"
+                onClick={() => handleDelete(product)}
+              >
                 <span className="hidden sm:inline">Delete</span>
                 <Trash className="sm:hidden" />
               </Button>
             </div>
-            <LikeButton isLiked={isLiked} onClick={handleToggleFavorite} />
+            <LikeButton
+              isLiked={isLiked}
+              onClick={() => handleToggleFavorite(product.id)}
+            />
           </div>
         </CardContent>
       </Card>
