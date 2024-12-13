@@ -5,6 +5,7 @@ import { Product } from "@/types/product";
 import { updateProduct } from "@/state/productsSlice";
 import { ProductForm } from "@/components/ProductForm";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
+import { toast } from "sonner";
 
 export const EditProduct = () => {
   const { id } = useParams();
@@ -19,7 +20,7 @@ export const EditProduct = () => {
     return <ErrorMessage title="Error" message="Product not found" />;
   }
 
-  const onSubmit = async (data: Omit<Product, "id" | "rating">) => {
+  const onSubmit = (data: Omit<Product, "id" | "rating">) => {
     dispatch(
       updateProduct({
         ...data,
@@ -28,6 +29,15 @@ export const EditProduct = () => {
       }),
     );
     navigate(`/products/${product.id}`);
+    toast("Updated", {
+      description: `"${data.title}" has been updated`,
+      action: {
+        label: "Undo",
+        onClick: () => {
+          dispatch(updateProduct(product));
+        },
+      },
+    });
   };
 
   return (

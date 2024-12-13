@@ -1,13 +1,17 @@
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { AppDispatch } from "@/state/store";
+import { Product } from "@/types/product";
+import { toast } from "sonner";
 import {
   deleteProduct,
   toggleFavorite,
+  addProduct,
 } from "@/state/productsSlice";
-import { Product } from "@/types/product";
 
-
+const truncate = (text: string, maxLength: number) => {
+  return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+};
 
 export const useProductActions = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -16,6 +20,15 @@ export const useProductActions = () => {
   const handleDelete = (product: Product) => {
     dispatch(deleteProduct(product.id));
     navigate("/products");
+    toast("Deleted", {
+      description: `"${truncate(product.title, 20)}" has been removed`,
+      action: {
+        label: "Undo",
+        onClick: () => {
+          dispatch(addProduct(product));
+        },
+      },
+    });
   };
 
   const handleToggleFavorite = (id: number) => {
