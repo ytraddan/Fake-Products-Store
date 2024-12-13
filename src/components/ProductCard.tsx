@@ -1,18 +1,18 @@
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { Product } from "@/types/product";
 import { useSelector } from "react-redux";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { LoadingImage } from "@/components/ui/LoadingImage";
 import { LikeButton } from "@/components/ui/LikeButton";
-import { Pencil, Trash } from "lucide-react";
+import { DeleteButton } from "@/components/ui/DeleteButton";
+import { EditButton } from "@/components/ui/EditButton";
 import { useProductActions } from "@/hooks/useProductActions";
 import { RootState } from "@/state/store";
 
 export const ProductCard = ({ product }: { product: Product }) => {
   const navigate = useNavigate();
   const { favorites } = useSelector((state: RootState) => state.products);
-  const { handleDelete, handleToggleFavorite } = useProductActions();
+  const { handleToggleFavorite, handleDelete } = useProductActions();
 
   const handleCardClick = (id: number) => {
     navigate(`/products/${id}`);
@@ -44,21 +44,8 @@ export const ProductCard = ({ product }: { product: Product }) => {
         </div>
         <div className="mt-2 flex items-center justify-between">
           <div className="flex gap-1 sm:gap-2">
-            <Button variant="outline" size="sm" className="p-2 sm:p-3" asChild>
-              <Link to={`/products/${product.id}/edit`}>
-                <span className="hidden sm:inline">Edit</span>
-                <Pencil className="sm:hidden" />
-              </Link>
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="p-3"
-              onClick={() => handleDelete(product)}
-            >
-              <span className="hidden sm:inline">Delete</span>
-              <Trash className="sm:hidden" />
-            </Button>
+            <DeleteButton onClick={() => handleDelete(product)} size="sm" />
+            <EditButton link={`/products/${product.id}/edit`} size="sm" />
           </div>
           <LikeButton
             isLiked={isLiked}

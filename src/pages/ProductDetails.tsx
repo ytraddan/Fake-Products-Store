@@ -3,16 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LikeButton } from "@/components/ui/LikeButton";
+import { DeleteButton } from "@/components/ui/DeleteButton";
+import { EditButton } from "@/components/ui/EditButton";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
-import { Pencil, Star, Trash } from "lucide-react";
+import { Star } from "lucide-react";
 import { LoadingImage } from "@/components/ui/LoadingImage";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { useProductActions } from "@/hooks/useProductActions";
 
 export const ProductDetails = () => {
   const { id } = useParams();
-  const { handleDelete, handleToggleFavorite } = useProductActions();
+  const { handleToggleFavorite, handleDelete } = useProductActions();
   const { items, loading, favorites } = useSelector(
     (state: RootState) => state.products,
   );
@@ -56,20 +58,8 @@ export const ProductDetails = () => {
               <Button variant="default" asChild>
                 <Link to="/products">Go back</Link>
               </Button>
-              <Button variant="outline" className="p-2 sm:p-3" asChild>
-                <Link to={`/products/${product.id}/edit`}>
-                  <span className="hidden sm:inline">Edit</span>
-                  <Pencil className="sm:hidden" />
-                </Link>
-              </Button>
-              <Button
-                variant="ghost"
-                className="p-3"
-                onClick={() => handleDelete(product)}
-              >
-                <span className="hidden sm:inline">Delete</span>
-                <Trash className="sm:hidden" />
-              </Button>
+              <DeleteButton onClick={() => handleDelete(product)} />
+              <EditButton link={`/products/${product.id}/edit`} />
             </div>
             <LikeButton
               isLiked={isLiked}
