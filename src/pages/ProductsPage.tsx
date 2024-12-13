@@ -12,6 +12,8 @@ import { LikeButton } from "@/components/ui/LikeButton";
 import { ProductCard } from "@/components/ProductCard";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { RootState } from "@/state/store";
+import { LayoutGrid, List } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   Pagination,
   PaginationContent,
@@ -43,6 +45,10 @@ export const Products = () => {
     "all",
   );
   const [category, setCategory] = useLocalStorage<string>("category", "all");
+  const [viewMode, setViewMode] = useLocalStorage<"grid" | "list">(
+    "viewMode",
+    "list",
+  );
 
   const isLg = useMediaQuery("(min-width: 1024px)");
   const isMd = useMediaQuery("(min-width: 768px)");
@@ -118,20 +124,29 @@ export const Products = () => {
     <div className="container mx-auto p-4">
       <PageHeader />
 
-      <div className="my-6 flex flex-col gap-4 sm:flex-row">
-        <Input
-          placeholder="Search for products..."
-          value={searchTerm}
-          onChange={(e) => handleSearchTermChange(e.target.value)}
-        />
+      <div className="my-6 flex flex-col gap-2 sm:flex-row">
+        <div className="flex w-full items-center gap-2">
+          <Input
+            placeholder="Search for products..."
+            value={searchTerm}
+            onChange={(e) => handleSearchTermChange(e.target.value)}
+          />
+          <ViewToggle />
+        </div>
         <div className="flex gap-2">
           <PriceFilter />
           <CategoryFilter />
         </div>
       </div>
-      <div className="sm:mb-18 mb-20 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+      <div
+        className={
+          viewMode === "grid"
+            ? "sm:mb-18 mb-20 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4"
+            : "sm:mb-18 mb-20 flex flex-col gap-4"
+        }
+      >
         {currentProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard key={product.id} product={product} viewMode={viewMode} />
         ))}
       </div>
       {totalPages > 1 && <Navigation />}
@@ -256,25 +271,74 @@ export const Products = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+        <div className={viewMode === "grid" 
+          ? "grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4"
+          : "flex flex-col gap-4"
+        }>
           {[...Array(itemsPerPage)].map((_, i) => (
-            <Card key={i}>
-              <CardHeader className="p-4">
-                <Skeleton className="h-5 w-full" />
-              </CardHeader>
-              <CardContent className="px-4 pb-4 pt-2">
-                <Skeleton className="mx-auto mb-4 h-20 w-full rounded-xl sm:h-44" />
-                <Skeleton className="mb-2 h-4 w-full" />
-                <Skeleton className="h-4 w-3/4" />
-                <div className="mt-2 flex items-center justify-between">
-                  <Skeleton className="h-8 w-16" />
-                  <Skeleton className="h-8 w-8" />
+            viewMode === "grid" ? (
+              <Card key={i}>
+                <CardHeader className="p-4">
+                  <Skeleton className="h-5 w-full" />
+                </CardHeader>
+                <CardContent className="px-4 pb-4 pt-2">
+                  <Skeleton className="mx-auto mb-4 h-20 w-full rounded-xl sm:h-44" />
+                  <Skeleton className="mb-2 h-4 w-full" />
+                  <Skeleton className="h-4 w-3/4" />
+                  <div className="mt-2 flex items-center justify-between">
+                    <Skeleton className="h-8 w-16" />
+                    <Skeleton className="h-8 w-8" />
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card key={i} className="overflow-hidden">
+                <div className="flex h-full flex-col gap-4 p-4 sm:flex-row sm:gap-6 sm:p-6">
+                  <Skeleton className="h-40 w-full rounded-md sm:h-32 sm:w-32" />
+                  <div className="flex flex-1 flex-col">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="space-y-2">
+                        <Skeleton className="h-6 w-48 sm:w-72" />
+                        <Skeleton className="h-4 w-full sm:w-96" />
+                        <Skeleton className="h-4 w-3/4 sm:w-80" />
+                      </div>
+                      <Skeleton className="h-7 w-20" />
+                    </div>
+                    <div className="mt-4 flex items-center justify-between sm:mt-auto">
+                      <div className="flex gap-2">
+                        <Skeleton className="h-8 w-8" />
+                        <Skeleton className="h-8 w-8" />
+                      </div>
+                      <Skeleton className="h-8 w-8" />
+                    </div>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
+              </Card>
+            )
           ))}
         </div>
       </div>
+    );
+  }
+
+  function ViewToggle() {
+    return (
+      <ToggleGroup
+        type="single"
+        variant="outline"
+        value={viewMode}
+        onValueChange={(value) =>
+          value && setViewMode(value as "grid" | "list")
+        }
+        className="text-zinc-900 dark:text-white"
+      >
+        <ToggleGroupItem value="grid">
+          <LayoutGrid fill="currentColor" />
+        </ToggleGroupItem>
+        <ToggleGroupItem value="list">
+          <List fill="currentColor" />
+        </ToggleGroupItem>
+      </ToggleGroup>
     );
   }
 };

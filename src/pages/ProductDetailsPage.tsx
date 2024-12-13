@@ -32,30 +32,32 @@ export const ProductDetails = () => {
   return (
     <div className="container mx-auto flex min-h-screen items-center p-4">
       <Card className="mx-auto w-full max-w-2xl">
-        <CardHeader>
-          <CardTitle className="flex items-start justify-between gap-6 text-xl font-bold sm:text-2xl">
-            <div className="flex items-start gap-4">
+        <CardHeader className="pb-2">
+          <CardTitle className="flex flex-col items-start justify-between gap-6">
+            <div className="flex w-full items-center justify-between gap-4">
               <Link
                 to="/products"
-                className="rounded-full p-2 transition-colors hover:bg-zinc-200 dark:text-white dark:hover:bg-zinc-700/40"
+                className="inline-block rounded-full p-2 transition-colors hover:bg-zinc-200 dark:text-white dark:hover:bg-zinc-700/40"
               >
                 <ArrowLeft />
               </Link>
-              <span>{product.title}</span>
+              <span className="text-xl font-bold sm:text-2xl">
+                ${product.price}
+              </span>
             </div>
-            <span>${product.price}</span>
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-3">
           <div className="flex justify-center">
             <LoadingImage
               src={product.image}
               alt={product.title}
-              className="max-h-64 sm:max-h-96"
+              className="mb-4 max-h-64 sm:max-h-96"
             />
           </div>
+          <span className="text-xl font-bold sm:text-2xl">{product.title}</span>
           <Rating rate={product.rating.rate} count={product.rating.count} />
-          <p className="mb-4 text-sm text-gray-500 first-letter:uppercase sm:text-lg">
+          <p className="text-sm text-gray-500 first-letter:uppercase sm:text-lg">
             {product.description}
           </p>
           <div className="flex justify-between">
@@ -76,7 +78,7 @@ export const ProductDetails = () => {
 
 const Rating = ({ rate, count }: { rate: number; count: number }) => {
   return (
-    <div className="mb-4 mt-6 flex items-center gap-2 text-zinc-950 dark:text-zinc-100">
+    <div className="flex items-center gap-2 text-zinc-950 dark:text-zinc-100">
       <div className="flex">
         {[...Array(5)].map((_, i) => (
           <Star key={i} fill={i < Math.floor(rate) ? "currentColor" : "none"} />
@@ -92,18 +94,23 @@ const Rating = ({ rate, count }: { rate: number; count: number }) => {
 const LoadingSkeleton = () => (
   <div className="container mx-auto flex min-h-screen items-center p-4">
     <Card className="mx-auto w-full max-w-2xl">
-      <CardHeader>
-        <div className="flex flex-row items-center justify-between">
-          <Skeleton className="h-8 w-32 sm:w-48" />
-          <Skeleton className="h-8 w-20 sm:w-24" />
+      <CardHeader className="pb-2">
+        <div className="flex w-full items-center justify-between gap-4">
+          <Skeleton className="h-8 w-16" />
+          <Skeleton className="h-8 w-24" />
         </div>
       </CardHeader>
-      <CardContent>
-        <Skeleton className="mx-auto h-72 w-full" />
-        <Skeleton className="my-4 h-4 w-24" />
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="my-4 h-4 w-3/4" />
-        <Skeleton className="h-10 w-32" />
+      <CardContent className="space-y-3">
+        <div className="flex justify-center">
+          <Skeleton className="h-64 w-full sm:h-96" />
+        </div>
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-6 w-48" />
+        <Skeleton className="h-24 w-full" />
+        <div className="flex justify-between">
+          <Skeleton className="h-10 w-20" />
+          <Skeleton className="h-10 w-10" />
+        </div>
       </CardContent>
     </Card>
   </div>

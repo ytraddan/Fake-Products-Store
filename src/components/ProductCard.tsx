@@ -9,7 +9,12 @@ import { EditButton } from "@/components/ui/EditButton";
 import { useProductActions } from "@/hooks/useProductActions";
 import { RootState } from "@/state/store";
 
-export const ProductCard = ({ product }: { product: Product }) => {
+interface ProductCardProps {
+  product: Product;
+  viewMode: "grid" | "list";
+}
+
+export const ProductCard = ({ product, viewMode }: ProductCardProps) => {
   const navigate = useNavigate();
   const { favorites } = useSelector((state: RootState) => state.products);
   const { handleToggleFavorite, handleDelete } = useProductActions();
@@ -19,6 +24,49 @@ export const ProductCard = ({ product }: { product: Product }) => {
   };
 
   const isLiked = favorites.includes(product.id);
+
+  if (viewMode === "list") {
+    return (
+      <Card className="overflow-hidden">
+        <div className="flex h-full flex-col gap-4 p-4 sm:flex-row sm:gap-6 sm:p-6">
+          <div
+            className="cursor-pointer"
+            onClick={() => handleCardClick(product.id)}
+          >
+            <LoadingImage
+              src={product.image}
+              alt={product.title}
+              className="h-40 w-full rounded-md object-cover sm:h-32 sm:w-32"
+            />
+          </div>
+          <div className="flex flex-1 flex-col">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+              <div
+                className="cursor-pointer"
+                onClick={() => handleCardClick(product.id)}
+              >
+                <h3 className="text-lg font-semibold">{product.title}</h3>
+                <p className="mt-2 line-clamp-2 text-sm text-gray-500 first-letter:uppercase">
+                  {product.description}
+                </p>
+              </div>
+              <span className="text-xl font-semibold">${product.price}</span>
+            </div>
+            <div className="mt-4 flex items-center justify-between sm:mt-auto">
+              <div className="flex items-center gap-2">
+                <DeleteButton onClick={() => handleDelete(product)} size="sm" />
+                <EditButton link={`/products/${product.id}/edit`} size="sm" />
+              </div>
+              <LikeButton
+                isLiked={isLiked}
+                onClick={() => handleToggleFavorite(product.id)}
+              />
+            </div>
+          </div>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card>
