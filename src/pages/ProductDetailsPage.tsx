@@ -31,7 +31,7 @@ export const ProductDetailsPage = () => {
 
   return (
     <div className="container mx-auto flex min-h-screen items-center p-4">
-      <Card className="mx-auto w-full max-w-2xl">
+      <Card className="dark:hover:border-zinc-inherit mx-auto w-full max-w-2xl hover:border-inherit">
         <CardHeader className="pb-2">
           <CardTitle className="flex flex-col items-start justify-between gap-6">
             <div className="flex w-full items-center justify-between gap-4">
