@@ -20,17 +20,19 @@ export const useProductActions = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   const handleDelete = (product: Product) => {
-    dispatch(deleteProduct(product.id));
-    navigate("/products");
-    toast("Deleted", {
-      description: `"${truncate(product.title, isMobile ? 15 : 20)}" has been removed`,
-      action: {
-        label: "Undo",
-        onClick: () => {
-          dispatch(addProduct(product));
+    setTimeout(() => {
+      dispatch(deleteProduct(product.id));
+      toast("Deleted", {
+        description: `"${truncate(product.title, isMobile ? 15 : 20)}" has been removed`,
+        action: {
+          label: "Undo",
+          onClick: () => {
+            dispatch(addProduct(product));
+          },
         },
-      },
-    });
+      });
+    }, 100);
+    navigate("/products");
   };
 
   const handleToggleFavorite = (id: number) => {
