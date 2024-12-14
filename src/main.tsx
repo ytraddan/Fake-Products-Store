@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import { store } from "./state/store";
 import { fetchProducts } from "./state/productsSlice";
 import { HashRouter, Route, Routes, Navigate } from "react-router";
-import { Products } from "./pages/ProductsPage";
+import { ProductsPage } from "./pages/ProductsPage";
 import { ProductDetails } from "./pages/ProductDetailsPage";
 import { CreateProduct } from "./pages/CreateProductPage";
 import { EditProduct } from "./pages/EditProductPage";
@@ -20,7 +20,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <HashRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/products" replace />} />
-          <Route path="/products" element={<Products />} />
+          <Route path="/products" element={<ProductsPage />} />
           <Route path="/products/:id" element={<ProductDetails />} />
           <Route path="/create-product" element={<CreateProduct />} />
           <Route path="/products/:id/edit" element={<EditProduct />} />

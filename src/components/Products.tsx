@@ -9,12 +9,12 @@ import { EditButton } from "@/components/ui/EditButton";
 import { useProductActions } from "@/hooks/useProductActions";
 import { RootState } from "@/state/store";
 
-interface ProductCardProps {
-  product: Product;
+interface ProductsProps {
+  products: Product[];
   viewMode: "grid" | "list";
 }
 
-export const ProductCard = ({ product, viewMode }: ProductCardProps) => {
+export const Products = ({ products, viewMode }: ProductsProps) => {
   const navigate = useNavigate();
   const { favorites } = useSelector((state: RootState) => state.products);
   const { handleToggleFavorite, handleDelete } = useProductActions();
@@ -23,9 +23,37 @@ export const ProductCard = ({ product, viewMode }: ProductCardProps) => {
     navigate(`/products/${id}`);
   };
 
-  const isLiked = favorites.includes(product.id);
+  const isLiked = (id: number) => {
+    return favorites.includes(id);
+  };
 
-  if (viewMode === "list") {
+  return (
+    <div className="sm:mb-18 mb-20">
+      {viewMode === "grid" ? <ProductGrid /> : <ProductList />}
+    </div>
+  );
+
+  function ProductList() {
+    return (
+      <div className="flex flex-col gap-4">
+        {products.map((product) => (
+          <ProductListItem product={product} key={product.id} />
+        ))}
+      </div>
+    );
+  }
+
+  function ProductGrid() {
+    return (
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+        {products.map((product) => (
+          <ProductGridItem product={product} key={product.id} />
+        ))}
+      </div>
+    );
+  }
+
+  function ProductListItem({ product }: { product: Product }) {
     return (
       <Card className="overflow-hidden">
         <div className="flex h-full flex-col gap-4 p-4 sm:flex-row sm:gap-6 sm:p-6">
@@ -58,7 +86,7 @@ export const ProductCard = ({ product, viewMode }: ProductCardProps) => {
                 <EditButton link={`/products/${product.id}/edit`} size="sm" />
               </div>
               <LikeButton
-                isLiked={isLiked}
+                isLiked={isLiked(product.id)}
                 onClick={() => handleToggleFavorite(product.id)}
               />
             </div>
@@ -68,39 +96,41 @@ export const ProductCard = ({ product, viewMode }: ProductCardProps) => {
     );
   }
 
-  return (
-    <Card>
-      <CardHeader className="p-4">
-        <CardTitle className="flex items-center justify-between">
-          <span className="max-w-64 truncate">{product.title}</span>
-          <span>${product.price}</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="px-4 pb-4 pt-2">
-        <div
-          className="cursor-pointer"
-          onClick={() => handleCardClick(product.id)}
-        >
-          <LoadingImage
-            src={product.image}
-            alt={product.title}
-            className="mb-4 h-20 sm:h-44"
-          />
-          <p className="line-clamp-3 text-xs text-gray-500 first-letter:uppercase sm:line-clamp-2 sm:text-sm">
-            {product.description}
-          </p>
-        </div>
-        <div className="mt-2 flex items-center justify-between">
-          <div className="flex gap-1 sm:gap-2">
-            <DeleteButton onClick={() => handleDelete(product)} size="sm" />
-            <EditButton link={`/products/${product.id}/edit`} size="sm" />
+  function ProductGridItem({ product }: { product: Product }) {
+    return (
+      <Card>
+        <CardHeader className="p-4">
+          <CardTitle className="flex items-center justify-between">
+            <span className="max-w-64 truncate">{product.title}</span>
+            <span>${product.price}</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-4 pb-4 pt-2">
+          <div
+            className="cursor-pointer"
+            onClick={() => handleCardClick(product.id)}
+          >
+            <LoadingImage
+              src={product.image}
+              alt={product.title}
+              className="mb-4 h-20 sm:h-44"
+            />
+            <p className="line-clamp-3 text-xs text-gray-500 first-letter:uppercase sm:line-clamp-2 sm:text-sm">
+              {product.description}
+            </p>
           </div>
-          <LikeButton
-            isLiked={isLiked}
-            onClick={() => handleToggleFavorite(product.id)}
-          />
-        </div>
-      </CardContent>
-    </Card>
-  );
+          <div className="mt-2 flex items-center justify-between">
+            <div className="flex gap-1 sm:gap-2">
+              <DeleteButton onClick={() => handleDelete(product)} size="sm" />
+              <EditButton link={`/products/${product.id}/edit`} size="sm" />
+            </div>
+            <LikeButton
+              isLiked={isLiked(product.id)}
+              onClick={() => handleToggleFavorite(product.id)}
+            />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 };
