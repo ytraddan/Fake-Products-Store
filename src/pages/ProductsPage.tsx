@@ -228,7 +228,7 @@ export const ProductsPage = () => {
 
   function Navigation() {
     return (
-      <Pagination className="fixed bottom-8 left-0 right-0 w-fit rounded-lg bg-zinc-100/80 backdrop-blur-sm dark:bg-zinc-900">
+      <Pagination className="fixed bottom-8 left-0 right-0 w-fit rounded-lg bg-zinc-100/80 backdrop-blur-sm transition-colors dark:bg-zinc-900">
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
