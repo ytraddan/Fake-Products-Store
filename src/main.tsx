@@ -11,7 +11,6 @@ import { EditProductPage } from "./pages/EditProductPage";
 import { Toaster } from "@/components/ui/sonner";
 import "./index.css";
 
-window.localStorage.clear();
 store.dispatch(fetchProducts());
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

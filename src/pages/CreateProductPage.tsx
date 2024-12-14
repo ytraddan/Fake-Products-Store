@@ -17,7 +17,7 @@ export const CreateProductPage = () => {
       rating: { rate: 0, count: 0 },
     };
     dispatch(addProduct(newProduct));
-    window.localStorage.clear();
+    sessionStorage.clear();
     navigate("/products");
     toast("Created", {
       description: `"${newProduct.title}" has been added`,

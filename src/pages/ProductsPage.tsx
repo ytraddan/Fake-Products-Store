@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSessionStorage } from "@/hooks/useSessionStorage";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
@@ -34,17 +35,20 @@ export const ProductsPage = () => {
   const { items, favorites, loading, error } = useSelector(
     (state: RootState) => state.products,
   );
-  const [showFavorites, setShowFavorites] = useLocalStorage<boolean>(
+  const [showFavorites, setShowFavorites] = useSessionStorage<boolean>(
     "showFavorites",
     false,
   );
-  const [searchTerm, setSearchTerm] = useLocalStorage<string>("searchTerm", "");
+  const [searchTerm, setSearchTerm] = useSessionStorage<string>(
+    "searchTerm",
+    "",
+  );
   const [currentPage, setCurrentPage] = useState(1);
-  const [priceRange, setPriceRange] = useLocalStorage<string>(
+  const [priceRange, setPriceRange] = useSessionStorage<string>(
     "priceRange",
     "all",
   );
-  const [category, setCategory] = useLocalStorage<string>("category", "all");
+  const [category, setCategory] = useSessionStorage<string>("category", "all");
   const [viewMode, setViewMode] = useLocalStorage<"grid" | "list">(
     "viewMode",
     "grid",
@@ -316,19 +320,16 @@ export const ProductsPage = () => {
             <div className="flex h-full flex-col gap-4 p-4 sm:flex-row sm:gap-6 sm:p-6">
               <Skeleton className="h-40 w-full rounded-md sm:h-32 sm:w-32" />
               <div className="flex flex-1 flex-col">
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="space-y-2">
-                    <Skeleton className="h-6 w-48 sm:w-72" />
-                    <Skeleton className="h-4 w-full sm:w-96" />
-                    <Skeleton className="h-4 w-3/4 sm:w-80" />
+                <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="w-full space-y-2">
+                    <Skeleton className="mb-4 h-6 w-48 sm:w-72" />
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-2/4" />
                   </div>
                   <Skeleton className="h-7 w-20" />
                 </div>
                 <div className="mt-4 flex items-center justify-between sm:mt-auto">
-                  <div className="flex gap-2">
-                    <Skeleton className="h-8 w-8" />
-                    <Skeleton className="h-8 w-8" />
-                  </div>
+                  <Skeleton className="h-8 w-20" />
                   <Skeleton className="h-8 w-8" />
                 </div>
               </div>
