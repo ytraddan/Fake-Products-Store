@@ -6,7 +6,7 @@ import { addProduct, deleteProduct } from "@/state/productsSlice";
 import { ProductForm } from "@/components/ProductForm";
 import { toast } from "sonner";
 
-export const CreateProduct = () => {
+export const CreateProductPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 

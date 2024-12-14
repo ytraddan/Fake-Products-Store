@@ -11,7 +11,7 @@ import { LoadingImage } from "@/components/ui/LoadingImage";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { useProductActions } from "@/hooks/useProductActions";
 
-export const ProductDetails = () => {
+export const ProductDetailsPage = () => {
   const { id } = useParams();
   const { handleToggleFavorite, handleDelete } = useProductActions();
   const { items, loading, favorites } = useSelector(

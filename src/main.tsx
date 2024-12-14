@@ -5,9 +5,9 @@ import { store } from "./state/store";
 import { fetchProducts } from "./state/productsSlice";
 import { HashRouter, Route, Routes, Navigate } from "react-router";
 import { ProductsPage } from "./pages/ProductsPage";
-import { ProductDetails } from "./pages/ProductDetailsPage";
-import { CreateProduct } from "./pages/CreateProductPage";
-import { EditProduct } from "./pages/EditProductPage";
+import { ProductDetailsPage } from "./pages/ProductDetailsPage";
+import { CreateProductPage } from "./pages/CreateProductPage";
+import { EditProductPage } from "./pages/EditProductPage";
 import { Toaster } from "@/components/ui/sonner";
 import "./index.css";
 
@@ -21,9 +21,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Routes>
           <Route path="/" element={<Navigate to="/products" replace />} />
           <Route path="/products" element={<ProductsPage />} />
-          <Route path="/products/:id" element={<ProductDetails />} />
-          <Route path="/create-product" element={<CreateProduct />} />
-          <Route path="/products/:id/edit" element={<EditProduct />} />
+          <Route path="/products/:id" element={<ProductDetailsPage />} />
+          <Route path="/create-product" element={<CreateProductPage />} />
+          <Route path="/products/:id/edit" element={<EditProductPage />} />
         </Routes>
         <Toaster />
       </HashRouter>

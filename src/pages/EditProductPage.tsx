@@ -7,7 +7,7 @@ import { ProductForm } from "@/components/ProductForm";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { toast } from "sonner";
 
-export const EditProduct = () => {
+export const EditProductPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
