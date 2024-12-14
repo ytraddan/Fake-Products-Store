@@ -3,6 +3,8 @@
 React application for managing a catalog of products from [FakeStoreAPI](https://fakestoreapi.com)  
 Deployed on [GitHub Pages](https://ytraddan.github.io/FakeProductsStore/) and [Vercel](https://fake-products-store.vercel.app/)
 
+![Alt text](https://i.ibb.co/wCxF6g4/Screenshot-1.png)
+
 ## Tech Stack
 
 ### Core
