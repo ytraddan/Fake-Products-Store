@@ -102,6 +102,12 @@ export const ProductsPage = () => {
     setCurrentPage(1);
   };
 
+  const handleViewModeChange = (value: string) => {
+    if (value === "grid" || value === "list") {
+      setViewMode(value);
+    }
+  };
+
   const handlePriceRangeChange = (value: string) => {
     setPriceRange(value);
     setCurrentPage(1);
@@ -173,7 +179,7 @@ export const ProductsPage = () => {
         type="single"
         variant="outline"
         value={viewMode}
-        onValueChange={(value) => setViewMode(value as "grid" | "list")}
+        onValueChange={(value) => handleViewModeChange(value)}
         className="text-zinc-900 dark:text-white"
       >
         <ToggleGroupItem value="grid">
