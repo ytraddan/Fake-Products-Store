@@ -27,6 +27,7 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -231,16 +232,40 @@ export const ProductsPage = () => {
       setCurrentPage(1);
     };
 
+    const products = items
+      .filter((product) =>
+        showFavorites ? favorites.includes(product.id) : true,
+      )
+      .filter((product) =>
+        product.title.toLowerCase().includes(searchTerm.toLowerCase()),
+      )
+      .filter((product) => {
+        return product.price >= priceRange;
+      });
+
+    const getCategoryCount = (categoryName: string) => {
+      return products.filter(
+        (product) => product.category === categoryName,
+      ).length;
+    };
+
     return (
       <Select value={category} onValueChange={handleCategoryChange}>
-        <SelectTrigger className="w-40">
+        <SelectTrigger className="w-44">
           <SelectValue placeholder="Category" />
         </SelectTrigger>
         <SelectContent className="relative" position="popper">
-          <SelectItem value="all">All Categories</SelectItem>
+          <SelectItem value="all">
+            All Categories{" "}
+            <span className="text-gray-500">({products.length})</span>
+          </SelectItem>
+          <SelectSeparator />
           {categories.map((category) => (
             <SelectItem key={category} value={category}>
-              {category.charAt(0).toUpperCase() + category.slice(1)}
+              {category.charAt(0).toUpperCase() + category.slice(1)}{" "}
+              <span className="text-gray-500">
+                ({getCategoryCount(category)})
+              </span>
             </SelectItem>
           ))}
         </SelectContent>
