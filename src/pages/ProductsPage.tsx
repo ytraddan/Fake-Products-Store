@@ -89,31 +89,6 @@ export const ProductsPage = () => {
     setCurrentPage(1);
   };
 
-  const handleToggleShowFavorites = () => {
-    setShowFavorites(!showFavorites);
-    setCurrentPage(1);
-  };
-
-  const handleViewModeChange = (value: string) => {
-    if (value === "grid" || value === "list") {
-      setViewMode(value);
-    }
-  };
-
-  const handlePriceRangeChange = (value: number) => {
-    setPriceRange(value);
-    setCurrentPage(1);
-  };
-
-  const handleCategoryChange = (value: string) => {
-    setCategory(value);
-    setCurrentPage(1);
-  };
-
-  const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
-  };
-
   if (loading) {
     return <LoadingSkeleton />;
   }
@@ -146,6 +121,11 @@ export const ProductsPage = () => {
   );
 
   function PageHeader() {
+    const handleToggleShowFavorites = () => {
+      setShowFavorites(!showFavorites);
+      setCurrentPage(1);
+    };
+
     return (
       <div className="flex items-start justify-between">
         <h1 className="text-2xl font-bold dark:text-white">
@@ -166,6 +146,12 @@ export const ProductsPage = () => {
   }
 
   function ViewToggle() {
+    const handleViewModeChange = (value: string) => {
+      if (value === "grid" || value === "list") {
+        setViewMode(value);
+      }
+    };
+
     return (
       <ToggleGroup
         type="single"
@@ -185,20 +171,25 @@ export const ProductsPage = () => {
   }
 
   function PriceFilter() {
-    const [localValue, setLocalValue] = useState(priceRange);
+    const [localPrice, setLocalPrice] = useState(priceRange);
     const maxPrice = Math.max(...items.map((item) => item.price));
     const step = Math.ceil(maxPrice / 50);
+
+    const handlePriceRangeChange = (value: number) => {
+      setPriceRange(value);
+      setCurrentPage(1);
+    };
 
     return (
       <div className="flex w-48 flex-col gap-2">
         <span className="text-sm text-zinc-900 dark:text-white">
-          Price: ${localValue}+
+          Price: ${localPrice}+
         </span>
         <Slider
-          value={[localValue]}
+          value={[localPrice]}
           max={maxPrice}
           step={step}
-          onValueChange={(value) => setLocalValue(value[0])}
+          onValueChange={(value) => setLocalPrice(value[0])}
           onValueCommit={(value) => handlePriceRangeChange(value[0])}
         />
       </div>
@@ -206,6 +197,11 @@ export const ProductsPage = () => {
   }
 
   function CategoryFilter() {
+    const handleCategoryChange = (value: string) => {
+      setCategory(value);
+      setCurrentPage(1);
+    };
+
     return (
       <Select value={category} onValueChange={handleCategoryChange}>
         <SelectTrigger className="w-40">
@@ -224,6 +220,10 @@ export const ProductsPage = () => {
   }
 
   function Navigation() {
+    const handlePageChange = (newPage: number) => {
+      setCurrentPage(newPage);
+    };
+
     return (
       <Pagination className="fixed bottom-8 left-0 right-0 w-fit rounded-lg bg-zinc-100/80 backdrop-blur-sm transition-colors dark:bg-zinc-900">
         <PaginationContent>
