@@ -46,10 +46,7 @@ export const ProductsPage = () => {
     "",
   );
   const [currentPage, setCurrentPage] = useState(1);
-  const [priceRange, setPriceRange] = useSessionStorage<number>(
-    "priceRange",
-    150,
-  );
+  const [minPrice, setMinPrice] = useSessionStorage<number>("minPrice", 0);
   const [category, setCategory] = useSessionStorage<string>("category", "all");
   const [viewMode, setViewMode] = useLocalStorage<"grid" | "list">(
     "viewMode",
@@ -75,7 +72,7 @@ export const ProductsPage = () => {
       return product.category === category;
     })
     .filter((product) => {
-      return product.price >= priceRange;
+      return product.price >= minPrice;
     });
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -184,27 +181,27 @@ export const ProductsPage = () => {
   }
 
   function PriceFilter() {
-    const [localPrice, setLocalPrice] = useState(priceRange);
+    const [localMinPrice, setLocalMinPrice] = useState(minPrice);
     const maxPrice = Math.max(...items.map((item) => item.price));
     const step = Math.ceil(maxPrice / 50);
 
-    const handlePriceRangeChange = (value: number) => {
-      setPriceRange(value);
+    const handleMinPriceChange = (value: number) => {
+      setMinPrice(value);
       setCurrentPage(1);
     };
 
     const handleClearPrice = () => {
-      setLocalPrice(0);
-      setPriceRange(0);
+      setLocalMinPrice(0);
+      setMinPrice(0);
       setCurrentPage(1);
     };
 
     return (
       <div className="flex w-48 flex-col gap-2">
         <div className="relative flex items-center justify-between text-zinc-900 dark:text-white">
-          <span className="text-sm">Price: ${localPrice}+</span>
+          <span className="text-sm">Price: ${localMinPrice}+</span>
 
-          {localPrice > 0 && (
+          {localMinPrice > 0 && (
             <Button
               variant="ghost"
               size="sm"
@@ -216,11 +213,11 @@ export const ProductsPage = () => {
           )}
         </div>
         <Slider
-          value={[localPrice]}
+          value={[localMinPrice]}
           max={maxPrice}
           step={step}
-          onValueChange={(value) => setLocalPrice(value[0])}
-          onValueCommit={(value) => handlePriceRangeChange(value[0])}
+          onValueChange={(value) => setLocalMinPrice(value[0])}
+          onValueCommit={(value) => handleMinPriceChange(value[0])}
         />
       </div>
     );
@@ -240,13 +237,12 @@ export const ProductsPage = () => {
         product.title.toLowerCase().includes(searchTerm.toLowerCase()),
       )
       .filter((product) => {
-        return product.price >= priceRange;
+        return product.price >= minPrice;
       });
 
     const getCategoryCount = (categoryName: string) => {
-      return products.filter(
-        (product) => product.category === categoryName,
-      ).length;
+      return products.filter((product) => product.category === categoryName)
+        .length;
     };
 
     return (

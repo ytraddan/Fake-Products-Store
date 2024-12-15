@@ -28,7 +28,7 @@ export const EditProductPage = () => {
         rating: product.rating,
       }),
     );
-    navigate(`/products/${product.id}`);
+    navigate(-1);
     toast("Updated", {
       description: `"${data.title}" has been updated`,
       action: {
