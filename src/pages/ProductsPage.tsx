@@ -13,7 +13,7 @@ import { LikeButton } from "@/components/ui/LikeButton";
 import { Products } from "@/components/Products";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { RootState } from "@/state/store";
-import { LayoutGrid, List } from "lucide-react";
+import { LayoutGrid, List, X } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   Pagination,
@@ -103,11 +103,23 @@ export const ProductsPage = () => {
 
       <div className="my-6 flex flex-col gap-2 sm:flex-row">
         <div className="flex w-full items-center gap-2">
-          <Input
-            placeholder="Search for products..."
-            value={searchTerm}
-            onChange={(e) => handleSearchTermChange(e.target.value)}
-          />
+          <div className="relative flex-1">
+            <Input
+              placeholder="Search for products..."
+              value={searchTerm}
+              onChange={(e) => handleSearchTermChange(e.target.value)}
+            />
+            {searchTerm && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="absolute right-2 top-1/2 h-6 -translate-y-1/2 px-1 text-zinc-900 dark:text-white"
+                onClick={() => handleSearchTermChange("")}
+              >
+                <X fill="currentColor" />
+              </Button>
+            )}
+          </div>
           <ViewToggle />
         </div>
         <div className="flex gap-2">
@@ -180,11 +192,28 @@ export const ProductsPage = () => {
       setCurrentPage(1);
     };
 
+    const handleClearPrice = () => {
+      setLocalPrice(0);
+      setPriceRange(0);
+      setCurrentPage(1);
+    };
+
     return (
       <div className="flex w-48 flex-col gap-2">
-        <span className="text-sm text-zinc-900 dark:text-white">
-          Price: ${localPrice}+
-        </span>
+        <div className="relative flex items-center justify-between text-zinc-900 dark:text-white">
+          <span className="text-sm">Price: ${localPrice}+</span>
+
+          {localPrice > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute right-0 top-0 h-6 px-1"
+              onClick={handleClearPrice}
+            >
+              <X fill="currentColor" />
+            </Button>
+          )}
+        </div>
         <Slider
           value={[localPrice]}
           max={maxPrice}
