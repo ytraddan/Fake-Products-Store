@@ -30,6 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 
 export const ProductsPage = () => {
   const { items, favorites, loading, error } = useSelector(
@@ -44,9 +45,9 @@ export const ProductsPage = () => {
     "",
   );
   const [currentPage, setCurrentPage] = useState(1);
-  const [priceRange, setPriceRange] = useSessionStorage<string>(
+  const [priceRange, setPriceRange] = useSessionStorage<number>(
     "priceRange",
-    "all",
+    150,
   );
   const [category, setCategory] = useSessionStorage<string>("category", "all");
   const [viewMode, setViewMode] = useLocalStorage<"grid" | "list">(
@@ -73,16 +74,7 @@ export const ProductsPage = () => {
       return product.category === category;
     })
     .filter((product) => {
-      switch (priceRange) {
-        case "0-49":
-          return product.price <= 49;
-        case "50-99":
-          return product.price >= 50 && product.price <= 99;
-        case "100+":
-          return product.price >= 100;
-        default:
-          return true;
-      }
+      return product.price >= priceRange;
     });
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -108,7 +100,7 @@ export const ProductsPage = () => {
     }
   };
 
-  const handlePriceRangeChange = (value: string) => {
+  const handlePriceRangeChange = (value: number) => {
     setPriceRange(value);
     setCurrentPage(1);
   };
@@ -144,8 +136,8 @@ export const ProductsPage = () => {
           <ViewToggle />
         </div>
         <div className="flex gap-2">
-          <PriceFilter />
           <CategoryFilter />
+          <PriceFilter />
         </div>
       </div>
       <Products products={currentProducts} viewMode={viewMode} />
@@ -193,18 +185,23 @@ export const ProductsPage = () => {
   }
 
   function PriceFilter() {
+    const [localValue, setLocalValue] = useState(priceRange);
+    const maxPrice = Math.max(...items.map((item) => item.price));
+    const step = Math.ceil(maxPrice / 50);
+
     return (
-      <Select value={priceRange} onValueChange={handlePriceRangeChange}>
-        <SelectTrigger className="w-32">
-          <SelectValue placeholder="Price Range" />
-        </SelectTrigger>
-        <SelectContent className="relative" position="popper">
-          <SelectItem value="all">All Prices</SelectItem>
-          <SelectItem value="0-49">$0 - $49</SelectItem>
-          <SelectItem value="50-99">$50 - $99</SelectItem>
-          <SelectItem value="100+">$100+</SelectItem>
-        </SelectContent>
-      </Select>
+      <div className="flex w-48 flex-col gap-2">
+        <span className="text-sm text-zinc-900 dark:text-white">
+          Price: ${localValue}+
+        </span>
+        <Slider
+          value={[localValue]}
+          max={maxPrice}
+          step={step}
+          onValueChange={(value) => setLocalValue(value[0])}
+          onValueCommit={(value) => handlePriceRangeChange(value[0])}
+        />
+      </div>
     );
   }
 
