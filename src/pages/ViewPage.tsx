@@ -11,7 +11,7 @@ import { LoadingImage } from "@/components/ui/LoadingImage";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { useProductActions } from "@/hooks/useProductActions";
 
-export default function ProductDetailsPage() {
+export default function ViewPage() {
   const { id } = useParams();
   const { handleToggleFavorite, handleDelete } = useProductActions();
   const { items, loading, favorites } = useSelector(

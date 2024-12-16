@@ -7,7 +7,7 @@ import { clearFilters } from "@/state/filtersSlice";
 import { toast } from "sonner";
 import ProductForm from "@/components/ProductForm";
 
-export default function CreateProductPage() {
+export default function CreatePage() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 

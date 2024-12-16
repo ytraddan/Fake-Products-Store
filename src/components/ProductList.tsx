@@ -14,7 +14,7 @@ interface ProductsProps {
   viewMode: "grid" | "list";
 }
 
-export default function Products({ products, viewMode }: ProductsProps) {
+export default function ProductList({ products, viewMode }: ProductsProps) {
   const navigate = useNavigate();
   const { favorites } = useSelector((state: RootState) => state.products);
   const { handleToggleFavorite, handleDelete } = useProductActions();
@@ -133,4 +133,4 @@ export default function Products({ products, viewMode }: ProductsProps) {
       </Card>
     );
   }
-};
+}

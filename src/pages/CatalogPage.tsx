@@ -37,9 +37,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Products from "@/components/Products";
+import ProductList from "@/components/ProductList";
 
-export default function ProductsPage() {
+export default function CatalogPage() {
   const dispatch = useDispatch();
   const { items, favorites, loading, error } = useSelector(
     (state: RootState) => state.products,
@@ -125,7 +125,7 @@ export default function ProductsPage() {
           <PriceFilter />
         </div>
       </div>
-      <Products products={currentProducts} viewMode={viewMode} />
+      <ProductList products={currentProducts} viewMode={viewMode} />
       {totalPages > 1 && <Navigation />}
     </div>
   );
