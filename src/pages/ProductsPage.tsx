@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useDispatch, useSelector } from "react-redux";
-import { Products } from "@/components/Products";
 import { RootState } from "@/state/store";
 import {
   setShowFavorites,
@@ -38,8 +37,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Products from "@/components/Products";
 
-export const ProductsPage = () => {
+export default function ProductsPage() {
   const dispatch = useDispatch();
   const { items, favorites, loading, error } = useSelector(
     (state: RootState) => state.products,
@@ -392,4 +392,4 @@ export const ProductsPage = () => {
       </div>
     );
   }
-};
+}

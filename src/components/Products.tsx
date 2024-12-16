@@ -14,7 +14,7 @@ interface ProductsProps {
   viewMode: "grid" | "list";
 }
 
-export const Products = ({ products, viewMode }: ProductsProps) => {
+export default function Products({ products, viewMode }: ProductsProps) {
   const navigate = useNavigate();
   const { favorites } = useSelector((state: RootState) => state.products);
   const { handleToggleFavorite, handleDelete } = useProductActions();

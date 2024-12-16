@@ -11,7 +11,7 @@ import { LoadingImage } from "@/components/ui/LoadingImage";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { useProductActions } from "@/hooks/useProductActions";
 
-export const ProductDetailsPage = () => {
+export default function ProductDetailsPage() {
   const { id } = useParams();
   const { handleToggleFavorite, handleDelete } = useProductActions();
   const { items, loading, favorites } = useSelector(
@@ -74,7 +74,7 @@ export const ProductDetailsPage = () => {
       </Card>
     </div>
   );
-};
+}
 
 const Rating = ({ rate, count }: { rate: number; count: number }) => {
   return (

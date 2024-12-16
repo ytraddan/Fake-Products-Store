@@ -4,10 +4,10 @@ import { AppDispatch } from "@/state/store";
 import { Product } from "@/types/product";
 import { addProduct, deleteProduct } from "@/state/productsSlice";
 import { clearFilters } from "@/state/filtersSlice";
-import { ProductForm } from "@/components/ProductForm";
 import { toast } from "sonner";
+import ProductForm from "@/components/ProductForm";
 
-export const CreateProductPage = () => {
+export default function CreateProductPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -32,4 +32,4 @@ export const CreateProductPage = () => {
   };
 
   return <ProductForm onSubmit={onSubmit} title="Create New Product" />;
-};
+}

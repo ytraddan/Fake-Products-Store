@@ -21,11 +21,11 @@ interface ProductFormProps {
   title: string;
 }
 
-export const ProductForm = ({
+export default function ProductForm({
   initialData,
   onSubmit,
   title,
-}: ProductFormProps) => {
+}: ProductFormProps) {
   const navigate = useNavigate();
 
   const defaultValues = initialData ?? {
@@ -148,4 +148,4 @@ export const ProductForm = ({
       </Card>
     </div>
   );
-};
+}

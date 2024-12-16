@@ -3,11 +3,11 @@ import { useNavigate, useParams } from "react-router";
 import { AppDispatch, RootState } from "@/state/store";
 import { Product } from "@/types/product";
 import { updateProduct } from "@/state/productsSlice";
-import { ProductForm } from "@/components/ProductForm";
+import ProductForm from "@/components/ProductForm";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { toast } from "sonner";
 
-export const EditProductPage = () => {
+export default function EditProductPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
@@ -47,4 +47,4 @@ export const EditProductPage = () => {
       title="Edit Product"
     />
   );
-};
+}

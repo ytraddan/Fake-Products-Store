@@ -4,11 +4,11 @@ import { Provider } from "react-redux";
 import { store } from "./state/store";
 import { fetchProducts } from "./state/productsSlice";
 import { HashRouter, Route, Routes, Navigate } from "react-router";
-import { ProductsPage } from "./pages/ProductsPage";
-import { ProductDetailsPage } from "./pages/ProductDetailsPage";
-import { CreateProductPage } from "./pages/CreateProductPage";
-import { EditProductPage } from "./pages/EditProductPage";
 import { Toaster } from "@/components/ui/sonner";
+import ProductsPage from "./pages/ProductsPage";
+import ProductDetailsPage from "./pages/ProductDetailsPage";
+import CreateProductPage from "./pages/CreateProductPage";
+import EditProductPage from "./pages/EditProductPage";
 import "./index.css";
 
 store.dispatch(fetchProducts());
