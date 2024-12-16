@@ -1,18 +1,25 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import { Link } from "react-router";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useDispatch, useSelector } from "react-redux";
+import { Products } from "@/components/Products";
+import { RootState } from "@/state/store";
+import {
+  setShowFavorites,
+  setSearchTerm,
+  setCurrentPage,
+  setMinPrice,
+  setCategory,
+  setViewMode,
+} from "@/state/filtersSlice";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useSessionStorage } from "@/hooks/useSessionStorage";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { LikeButton } from "@/components/ui/LikeButton";
-import { Products } from "@/components/Products";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
-import { RootState } from "@/state/store";
 import { LayoutGrid, List, X } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
@@ -31,27 +38,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
 
 export const ProductsPage = () => {
+  const dispatch = useDispatch();
   const { items, favorites, loading, error } = useSelector(
     (state: RootState) => state.products,
   );
-  const [showFavorites, setShowFavorites] = useSessionStorage<boolean>(
-    "showFavorites",
-    false,
-  );
-  const [searchTerm, setSearchTerm] = useSessionStorage<string>(
-    "searchTerm",
-    "",
-  );
-  const [currentPage, setCurrentPage] = useState(1);
-  const [minPrice, setMinPrice] = useSessionStorage<number>("minPrice", 0);
-  const [category, setCategory] = useSessionStorage<string>("category", "all");
-  const [viewMode, setViewMode] = useLocalStorage<"grid" | "list">(
-    "viewMode",
-    "grid",
-  );
+  const {
+    showFavorites,
+    searchTerm,
+    currentPage,
+    minPrice,
+    category,
+    viewMode,
+  } = useSelector((state: RootState) => state.filters);
 
   const isLg = useMediaQuery("(min-width: 1024px)");
   const isMd = useMediaQuery("(min-width: 768px)");
@@ -83,8 +83,8 @@ export const ProductsPage = () => {
   );
 
   const handleSearchTermChange = (searchInput: string) => {
-    setSearchTerm(searchInput);
-    setCurrentPage(1);
+    dispatch(setSearchTerm(searchInput));
+    dispatch(setCurrentPage(1));
   };
 
   if (loading) {
@@ -132,8 +132,8 @@ export const ProductsPage = () => {
 
   function PageHeader() {
     const handleToggleShowFavorites = () => {
-      setShowFavorites(!showFavorites);
-      setCurrentPage(1);
+      dispatch(setShowFavorites(!showFavorites));
+      dispatch(setCurrentPage(1));
     };
 
     return (
@@ -158,7 +158,7 @@ export const ProductsPage = () => {
   function ViewToggle() {
     const handleViewModeChange = (value: string) => {
       if (value === "grid" || value === "list") {
-        setViewMode(value);
+        dispatch(setViewMode(value));
       }
     };
 
@@ -186,14 +186,14 @@ export const ProductsPage = () => {
     const step = Math.ceil(maxPrice / 50);
 
     const handleMinPriceChange = (value: number) => {
-      setMinPrice(value);
-      setCurrentPage(1);
+      dispatch(setMinPrice(value));
+      dispatch(setCurrentPage(1));
     };
 
     const handleClearPrice = () => {
       setLocalMinPrice(0);
-      setMinPrice(0);
-      setCurrentPage(1);
+      dispatch(setMinPrice(0));
+      dispatch(setCurrentPage(1));
     };
 
     return (
@@ -225,8 +225,8 @@ export const ProductsPage = () => {
 
   function CategoryFilter() {
     const handleCategoryChange = (value: string) => {
-      setCategory(value);
-      setCurrentPage(1);
+      dispatch(setCategory(value));
+      dispatch(setCurrentPage(1));
     };
 
     const products = items
@@ -271,7 +271,7 @@ export const ProductsPage = () => {
 
   function Navigation() {
     const handlePageChange = (newPage: number) => {
-      setCurrentPage(newPage);
+      dispatch(setCurrentPage(newPage));
     };
 
     return (

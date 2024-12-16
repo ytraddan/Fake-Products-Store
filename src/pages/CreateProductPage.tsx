@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { AppDispatch } from "@/state/store";
 import { Product } from "@/types/product";
 import { addProduct, deleteProduct } from "@/state/productsSlice";
+import { clearFilters } from "@/state/filtersSlice";
 import { ProductForm } from "@/components/ProductForm";
 import { toast } from "sonner";
 
@@ -17,7 +18,7 @@ export const CreateProductPage = () => {
       rating: { rate: 0, count: 0 },
     };
     dispatch(addProduct(newProduct));
-    sessionStorage.clear();
+    dispatch(clearFilters());
     navigate("/products");
     toast("Created", {
       description: `"${newProduct.title}" has been added`,
