@@ -6,8 +6,8 @@ import { toast } from "sonner";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import {
   deleteProduct,
-  toggleFavorite,
   addProduct,
+  updateProduct,
 } from "@/state/productsSlice";
 
 const truncate = (text: string, maxLength: number) => {
@@ -19,7 +19,7 @@ export const useProductActions = () => {
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
-  const handleDelete = (product: Product) => {
+  const handleDeleteProduct = (product: Product) => {
     setTimeout(() => {
       dispatch(deleteProduct(product.id));
       toast("Deleted", {
@@ -35,12 +35,51 @@ export const useProductActions = () => {
     navigate("/products");
   };
 
-  const handleToggleFavorite = (id: number) => {
-    dispatch(toggleFavorite(id));
+  const handleAddProduct = (data: Omit<Product, "id" | "rating">) => {
+    const newProduct = {
+      ...data,
+      id: Date.now(),
+      rating: { rate: 0, count: 0 },
+    };
+    dispatch(addProduct(newProduct));
+    navigate("/products");
+    toast("Created", {
+      description: `"${newProduct.title}" has been added`,
+      action: {
+        label: "Undo",
+        onClick: () => {
+          dispatch(deleteProduct(newProduct.id));
+        },
+      },
+    });
+  };
+
+  const handleUpdateProduct = (
+    updatedProduct: Omit<Product, "id" | "rating">,
+    currentProduct: Product,
+  ) => {
+    dispatch(
+      updateProduct({
+        ...updatedProduct,
+        id: currentProduct.id,
+        rating: currentProduct.rating,
+      }),
+    );
+    navigate(-1);
+    toast("Updated", {
+      description: `"${updatedProduct.title}" has been updated`,
+      action: {
+        label: "Undo",
+        onClick: () => {
+          dispatch(updateProduct(currentProduct));
+        },
+      },
+    });
   };
 
   return {
-    handleDelete,
-    handleToggleFavorite,
+    handleDeleteProduct,
+    handleAddProduct,
+    handleUpdateProduct,
   };
 };
