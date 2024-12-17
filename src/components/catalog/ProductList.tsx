@@ -1,13 +1,15 @@
 import { useNavigate } from "react-router";
+import { RootState } from "@/state/store";
 import { Product } from "@/types/product";
-import { useSelector } from "react-redux";
+import { AppDispatch } from "@/state/store";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleFavorite } from "@/state/productsSlice";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LoadingImage } from "@/components/ui/LoadingImage";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { DeleteButton } from "@/components/ui/DeleteButton";
 import { EditButton } from "@/components/ui/EditButton";
 import { useProductActions } from "@/hooks/useProductActions";
-import { RootState } from "@/state/store";
 
 interface ProductsProps {
   products: Product[];
@@ -17,9 +19,10 @@ export default function ProductList({ products }: ProductsProps) {
   const navigate = useNavigate();
   const { favorites } = useSelector((state: RootState) => state.products);
   const { viewMode } = useSelector((state: RootState) => state.filters);
-  const { handleToggleFavorite, handleDelete } = useProductActions();
+  const { handleDeleteProduct } = useProductActions();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const handleCardClick = (id: number) => {
+  const onCardClick = (id: number) => {
     navigate(`/products/${id}`);
   };
 
@@ -59,7 +62,7 @@ export default function ProductList({ products }: ProductsProps) {
         <div className="flex h-full flex-col gap-4 p-4 sm:flex-row sm:gap-6 sm:p-6">
           <div
             className="cursor-pointer"
-            onClick={() => handleCardClick(product.id)}
+            onClick={() => onCardClick(product.id)}
           >
             <LoadingImage
               src={product.image}
@@ -71,7 +74,7 @@ export default function ProductList({ products }: ProductsProps) {
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div
                 className="cursor-pointer"
-                onClick={() => handleCardClick(product.id)}
+                onClick={() => onCardClick(product.id)}
               >
                 <h3 className="text-lg font-semibold">{product.title}</h3>
                 <p className="mt-2 line-clamp-2 text-sm text-gray-500 first-letter:uppercase">
@@ -82,12 +85,15 @@ export default function ProductList({ products }: ProductsProps) {
             </div>
             <div className="mt-4 flex items-center justify-between sm:mt-auto">
               <div className="flex items-center gap-2">
-                <DeleteButton onClick={() => handleDelete(product)} size="sm" />
+                <DeleteButton
+                  onClick={() => handleDeleteProduct(product)}
+                  size="sm"
+                />
                 <EditButton link={`/products/${product.id}/edit`} size="sm" />
               </div>
               <LikeButton
                 isLiked={isLiked(product.id)}
-                onClick={() => handleToggleFavorite(product.id)}
+                onClick={() => dispatch(toggleFavorite(product.id))}
               />
             </div>
           </div>
@@ -108,7 +114,7 @@ export default function ProductList({ products }: ProductsProps) {
         <CardContent className="px-4 pb-4 pt-2">
           <div
             className="cursor-pointer"
-            onClick={() => handleCardClick(product.id)}
+            onClick={() => onCardClick(product.id)}
           >
             <LoadingImage
               src={product.image}
@@ -121,12 +127,15 @@ export default function ProductList({ products }: ProductsProps) {
           </div>
           <div className="mt-2 flex items-center justify-between">
             <div className="flex gap-1 sm:gap-2">
-              <DeleteButton onClick={() => handleDelete(product)} size="sm" />
+              <DeleteButton
+                onClick={() => handleDeleteProduct(product)}
+                size="sm"
+              />
               <EditButton link={`/products/${product.id}/edit`} size="sm" />
             </div>
             <LikeButton
               isLiked={isLiked(product.id)}
-              onClick={() => handleToggleFavorite(product.id)}
+              onClick={() => dispatch(toggleFavorite(product.id))}
             />
           </div>
         </CardContent>

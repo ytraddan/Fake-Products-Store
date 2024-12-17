@@ -1,19 +1,15 @@
-import { Link } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/state/store";
 import { RootState } from "@/state/store";
-import { setCurrentPage, setShowFavorites } from "@/state/filtersSlice";
+import { toggleShowFavorites } from "@/state/filtersSlice";
+import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { LikeButton } from "@/components/ui/LikeButton";
 
 export default function PageHeader() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { showFavorites } = useSelector((state: RootState) => state.filters);
-
-  const handleToggleShowFavorites = () => {
-    dispatch(setShowFavorites(!showFavorites));
-    dispatch(setCurrentPage(1));
-  };
 
   return (
     <div className="flex items-start justify-between">
@@ -24,7 +20,7 @@ export default function PageHeader() {
         <ThemeToggle />
         <LikeButton
           isLiked={showFavorites}
-          onClick={handleToggleShowFavorites}
+          onClick={() => dispatch(toggleShowFavorites())}
         />
         <Button asChild>
           <Link to="/create-product">Create Product</Link>

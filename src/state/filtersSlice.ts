@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { addProduct } from "./productsSlice";
 
 interface FiltersState {
   showFavorites: boolean;
@@ -22,35 +23,41 @@ export const filtersSlice = createSlice({
   name: "filters",
   initialState,
   reducers: {
-    setShowFavorites: (state, action: PayloadAction<boolean>) => {
-      state.showFavorites = action.payload;
-    },
     setSearchTerm: (state, action: PayloadAction<string>) => {
       state.searchTerm = action.payload;
+      state.currentPage = 1;
     },
     setCurrentPage: (state, action: PayloadAction<number>) => {
       state.currentPage = action.payload;
     },
     setMinPrice: (state, action: PayloadAction<number>) => {
       state.minPrice = action.payload;
+      state.currentPage = 1;
     },
     setCategory: (state, action: PayloadAction<string>) => {
       state.category = action.payload;
+      state.currentPage = 1;
     },
-    setViewMode: (state, action: PayloadAction<"grid" | "list">) => {
-      state.viewMode = action.payload;
+    toggleShowFavorites: (state) => {
+      state.showFavorites = !state.showFavorites;
+    },
+    toggleViewMode: (state) => {
+      state.viewMode = state.viewMode === "grid" ? "list" : "grid";
     },
     clearFilters: () => initialState,
+  },
+  extraReducers: (builder) => {
+    builder.addCase(addProduct, () => initialState);
   },
 });
 
 export const {
-  setShowFavorites,
+  toggleShowFavorites,
   setSearchTerm,
   setCurrentPage,
   setMinPrice,
   setCategory,
-  setViewMode,
+  toggleViewMode,
   clearFilters,
 } = filtersSlice.actions;
 

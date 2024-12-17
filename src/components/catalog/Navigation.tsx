@@ -1,4 +1,5 @@
 import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/state/store";
 import { setCurrentPage } from "@/state/filtersSlice";
 import {
   Pagination,
@@ -18,22 +19,14 @@ export default function Navigation({
   currentPage,
   totalPages,
 }: NavigationProps) {
-  const dispatch = useDispatch();
-
-  const handlePageChange = (newPage: number) => {
-    dispatch(setCurrentPage(newPage));
-  };
+  const dispatch = useDispatch<AppDispatch>();
 
   return (
     <Pagination className="fixed bottom-8 left-0 right-0 w-fit rounded-lg bg-zinc-100/80 backdrop-blur-sm transition-colors dark:bg-zinc-900">
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            onClick={() => {
-              if (currentPage > 1) {
-                handlePageChange(currentPage - 1);
-              }
-            }}
+            onClick={() => dispatch(setCurrentPage(currentPage - 1))}
             className={
               currentPage === 1
                 ? "pointer-events-none opacity-50"
@@ -44,7 +37,7 @@ export default function Navigation({
         {Array.from({ length: totalPages }, (_, i) => (
           <PaginationItem key={i + 1}>
             <PaginationLink
-              onClick={() => handlePageChange(i + 1)}
+              onClick={() => dispatch(setCurrentPage(i + 1))}
               isActive={currentPage === i + 1}
               className={"cursor-pointer"}
             >
@@ -54,11 +47,7 @@ export default function Navigation({
         ))}
         <PaginationItem>
           <PaginationNext
-            onClick={() => {
-              if (currentPage < totalPages) {
-                handlePageChange(currentPage + 1);
-              }
-            }}
+            onClick={() => dispatch(setCurrentPage(currentPage + 1))}
             className={
               currentPage === totalPages
                 ? "pointer-events-none opacity-50"

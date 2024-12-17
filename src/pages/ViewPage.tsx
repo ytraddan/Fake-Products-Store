@@ -4,16 +4,18 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { DeleteButton } from "@/components/ui/DeleteButton";
 import { EditButton } from "@/components/ui/EditButton";
-import { useSelector } from "react-redux";
-import { RootState } from "@/state/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/state/store";
 import { Star, ArrowLeft } from "lucide-react";
 import { LoadingImage } from "@/components/ui/LoadingImage";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { useProductActions } from "@/hooks/useProductActions";
+import { toggleFavorite } from "@/state/productsSlice";
 
 export default function ViewPage() {
   const { id } = useParams();
-  const { handleToggleFavorite, handleDelete } = useProductActions();
+  const { handleDeleteProduct } = useProductActions();
+  const dispatch = useDispatch<AppDispatch>();
   const { items, loading, favorites } = useSelector(
     (state: RootState) => state.products,
   );
@@ -62,12 +64,12 @@ export default function ViewPage() {
           </p>
           <div className="flex justify-between">
             <div className="flex gap-2">
-              <DeleteButton onClick={() => handleDelete(product)} />
+              <DeleteButton onClick={() => handleDeleteProduct(product)} />
               <EditButton link={`/products/${product.id}/edit`} />
             </div>
             <LikeButton
               isLiked={isLiked}
-              onClick={() => handleToggleFavorite(product.id)}
+              onClick={() => dispatch(toggleFavorite(product.id))}
             />
           </div>
         </CardContent>

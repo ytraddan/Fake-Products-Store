@@ -1,6 +1,6 @@
 import { AppDispatch, RootState } from "@/state/store";
 import { useDispatch, useSelector } from "react-redux";
-import { setCategory, setCurrentPage } from "@/state/filtersSlice";
+import { setCategory } from "@/state/filtersSlice";
 import {
   Select,
   SelectContent,
@@ -32,18 +32,16 @@ export default function CategoryFilter() {
       return product.price >= minPrice;
     });
 
-  const handleCategoryChange = (value: string) => {
-    dispatch(setCategory(value));
-    dispatch(setCurrentPage(1));
-  };
-
   const getCategoryCount = (categoryName: string) => {
     return products.filter((product) => product.category === categoryName)
       .length;
   };
 
   return (
-    <Select value={category} onValueChange={handleCategoryChange}>
+    <Select
+      value={category}
+      onValueChange={(value) => dispatch(setCategory(value))}
+    >
       <SelectTrigger className="w-44">
         <SelectValue placeholder="Category" />
       </SelectTrigger>

@@ -9,6 +9,7 @@ interface LoadingSkeletonProps {
 
 export default function LoadingSkeleton({ itemsPerPage }: LoadingSkeletonProps) {
   const { viewMode } = useSelector((state: RootState) => state.filters);
+  
   return (
     <div className="container mx-auto p-4">
       <div className="flex items-start justify-between">
