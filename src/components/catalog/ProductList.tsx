@@ -11,12 +11,12 @@ import { RootState } from "@/state/store";
 
 interface ProductsProps {
   products: Product[];
-  viewMode: "grid" | "list";
 }
 
-export default function ProductList({ products, viewMode }: ProductsProps) {
+export default function ProductList({ products }: ProductsProps) {
   const navigate = useNavigate();
   const { favorites } = useSelector((state: RootState) => state.products);
+  const { viewMode } = useSelector((state: RootState) => state.filters);
   const { handleToggleFavorite, handleDelete } = useProductActions();
 
   const handleCardClick = (id: number) => {
